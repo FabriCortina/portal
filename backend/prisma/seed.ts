@@ -3,52 +3,77 @@ import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
+// Constantes para los datos de seed
+const SEED_DATA = {
+  tenants: [
+    {
+      name: 'sooft',
+      users: [
+        {
+          email: 'operaciones@sooft.com',
+          password: 'password_operaciones',
+          name: 'Usuario Operaciones',
+          role: 'operations' as const,
+        },
+      ],
+    },
+    {
+      name: 'empresa',
+      users: [
+        {
+          email: 'cliente@empresa.com',
+          password: 'password_cliente',
+          name: 'Usuario Cliente',
+          role: 'client' as const,
+        },
+      ],
+    },
+  ],
+} as const;
+
 async function main() {
   try {
-    // Crear tenants
-    const sooftTenant = await prisma.tenant.upsert({
-      where: { name: 'sooft' },
-      update: {},
-      create: {
-        name: 'sooft',
-      },
-    });
+    console.log('Iniciando seed de la base de datos...');
 
-    const empresaTenant = await prisma.tenant.upsert({
-      where: { name: 'empresa' },
-      update: {},
-      create: {
-        name: 'empresa',
-      },
-    });
+    // Crear tenants y sus usuarios
+    for (const tenantData of SEED_DATA.tenants) {
+      // Crear tenant
+      const tenant = await prisma.tenant.upsert({
+        where: { 
+          name: tenantData.name 
+        },
+        update: {},
+        create: {
+          name: tenantData.name,
+        },
+      });
 
-    // Crear usuarios
-    const operacionesPassword = await bcrypt.hash('password_operaciones', 10);
-    const clientePassword = await bcrypt.hash('password_cliente', 10);
+      console.log(`Tenant "${tenant.name}" creado/actualizado`);
 
-    await prisma.user.upsert({
-      where: { email: 'operaciones@sooft.com' },
-      update: {},
-      create: {
-        email: 'operaciones@sooft.com',
-        password: operacionesPassword,
-        name: 'Usuario Operaciones',
-        role: 'operations',
-        tenantId: sooftTenant.id,
-      },
-    });
+      // Crear usuarios para el tenant
+      for (const userData of tenantData.users) {
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+        
+        const user = await prisma.user.upsert({
+          where: { email: userData.email },
+          update: {
+            password: hashedPassword, // Actualizar contraseña si el usuario existe
+            name: userData.name,
+            role: userData.role,
+            tenantId: tenant.id,
+          },
+          create: {
+            email: userData.email,
+            password: hashedPassword,
+            name: userData.name,
+            role: userData.role,
+            tenantId: tenant.id,
+          },
+        });
 
-    await prisma.user.upsert({
-      where: { email: 'cliente@empresa.com' },
-      update: {},
-      create: {
-        email: 'cliente@empresa.com',
-        password: clientePassword,
-        name: 'Usuario Cliente',
-        role: 'client',
-        tenantId: empresaTenant.id,
-      },
-    });
+        console.log(`Usuario "${user.email}" creado/actualizado para tenant "${tenant.name}"`);
+      }
+    }
 
     console.log('Seed completado exitosamente');
   } catch (error) {
