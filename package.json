@@ -8,5 +8,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@nestjs/swagger": "^11.1.5"
+  }
 }
