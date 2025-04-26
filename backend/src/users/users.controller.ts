@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { CurrentUser, CurrentUserType } from '../auth/decorators/current-user.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -47,5 +48,12 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Lista de usuarios' })
   async findByTenant(@Param('tenantId', ParseUUIDPipe) tenantId: string) {
     return this.usersService.findUsersByTenant(tenantId);
+  }
+
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getProfile(@CurrentUser() user: CurrentUserType) {
+    return this.usersService.findUserById(user.id);
   }
 } 
