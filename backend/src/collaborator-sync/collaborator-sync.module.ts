@@ -1,20 +1,12 @@
 import { Module } from '@nestjs/common';
-import { CollaboratorSyncController } from '../interface/controllers/collaborator-sync.controller';
-import { ScheduleCollaboratorSyncUseCase } from '../application/use-cases/schedule-collaborator-sync.use-case';
-import { CollaboratorSyncService } from '../domain/services/collaborator-sync.service';
-import { GoogleSheetsAdapter } from '../infrastructure/adapters/google-sheets.adapter';
-import { PrismaService } from '../infrastructure/prisma/prisma.service';
+import { GoogleSheetsService } from './services/google-sheets.service';
+import { CollaboratorSyncController } from './controllers/collaborator-sync.controller';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
+  imports: [PrismaModule],
   controllers: [CollaboratorSyncController],
-  providers: [
-    ScheduleCollaboratorSyncUseCase,
-    CollaboratorSyncService,
-    {
-      provide: 'GoogleSheetsPort',
-      useClass: GoogleSheetsAdapter,
-    },
-    PrismaService,
-  ],
+  providers: [GoogleSheetsService],
+  exports: [GoogleSheetsService],
 })
 export class CollaboratorSyncModule {} 
