@@ -1,12 +1,13 @@
-import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '../infrastructure/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { TokensDto } from './dto/tokens.dto';
 import { RegisterOperationsDto } from './dto/register-operations.dto';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -17,26 +18,37 @@ export class AuthService {
   ) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.prisma.user.findUnique({
-      where: { email },
-    });
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: { email },
+      });
 
-    if (user && await bcrypt.compare(password, user.password)) {
-      const { password: _, ...result } = user;
-      return result;
+      if (user && await bcrypt.compare(password, user.password)) {
+        const { password: _, ...result } = user;
+        return result;
+      }
+      return null;
+    } catch (error) {
+      throw new InternalServerErrorException('Error al validar el usuario');
     }
-    return null;
   }
 
   async login(dto: LoginDto): Promise<TokensDto> {
-    const user = await this.validateUser(dto.email, dto.password);
-    if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas');
-    }
+    try {
+      const user = await this.validateUser(dto.email, dto.password);
+      if (!user) {
+        throw new UnauthorizedException('Credenciales inválidas');
+      }
 
-    const tokens = await this.generateTokens(user.id, user.email);
-    await this.saveRefreshToken(user.id, tokens.refreshToken);
-    return tokens;
+      const tokens = await this.generateTokens(user.id, user.email);
+      await this.saveRefreshToken(user.id, tokens.refreshToken);
+      return tokens;
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Error al iniciar sesión');
+    }
   }
 
   async refreshToken(dto: RefreshTokenDto): Promise<TokensDto> {
@@ -64,55 +76,81 @@ export class AuthService {
       const tokens = await this.generateTokens(refreshToken.user.id, refreshToken.user.email);
 
       // Eliminar el token viejo y guardar el nuevo
-      await this.prisma.refreshToken.delete({
-        where: { id: refreshToken.id },
-      });
-      await this.saveRefreshToken(refreshToken.user.id, tokens.refreshToken);
+      await this.prisma.$transaction([
+        this.prisma.refreshToken.delete({
+          where: { id: refreshToken.id },
+        }),
+        this.prisma.refreshToken.create({
+          data: {
+            token: tokens.refreshToken,
+            userId: refreshToken.user.id,
+          },
+        }),
+      ]);
 
       return tokens;
     } catch (error) {
-      throw new UnauthorizedException('Token de refresco inválido');
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Error al refrescar el token');
     }
   }
 
   async logout(userId: string): Promise<void> {
-    // Eliminar todos los refresh tokens del usuario
-    await this.prisma.refreshToken.deleteMany({
-      where: { userId },
-    });
+    try {
+      await this.prisma.refreshToken.deleteMany({
+        where: { userId },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException('Error al cerrar sesión');
+    }
   }
 
   private async generateTokens(userId: string, email: string): Promise<TokensDto> {
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(
-        { sub: userId, email },
-        {
-          secret: this.configService.get<string>('JWT_SECRET'),
-          expiresIn: this.configService.get<string>('JWT_EXPIRATION'),
-        },
-      ),
-      this.jwtService.signAsync(
-        { sub: userId, email },
-        {
-          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-          expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION'),
-        },
-      ),
-    ]);
+    try {
+      const [accessToken, refreshToken] = await Promise.all([
+        this.jwtService.signAsync(
+          { sub: userId, email },
+          {
+            secret: this.configService.get<string>('JWT_SECRET'),
+            expiresIn: this.configService.get<string>('JWT_EXPIRATION'),
+          },
+        ),
+        this.jwtService.signAsync(
+          { sub: userId, email },
+          {
+            secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+            expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION'),
+          },
+        ),
+      ]);
 
-    return {
-      accessToken,
-      refreshToken,
-    };
+      return {
+        accessToken,
+        refreshToken,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Error al generar los tokens');
+    }
   }
 
   private async saveRefreshToken(userId: string, token: string): Promise<void> {
-    await this.prisma.refreshToken.create({
-      data: {
-        token,
-        userId,
-      },
-    });
+    try {
+      await this.prisma.refreshToken.create({
+        data: {
+          token,
+          userId,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2002') {
+          throw new ConflictException('Token de refresco duplicado');
+        }
+      }
+      throw new InternalServerErrorException('Error al guardar el token de refresco');
+    }
   }
 
   async registerOperations(dto: RegisterOperationsDto): Promise<{ message: string }> {
@@ -154,7 +192,7 @@ export class AuthService {
       if (error instanceof ConflictException || error instanceof NotFoundException) {
         throw error;
       }
-      throw new Error('Error al registrar el usuario de operaciones');
+      throw new InternalServerErrorException('Error al registrar el usuario de operaciones');
     }
   }
 } 
