@@ -1,82 +1,85 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import authService from '../services/auth.service';
-import { AuthState, LoginCredentials, AuthResponse } from '../types/auth.types';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { AuthContextType, AuthState, LoginCredentials } from '../types/auth';
+import { authService } from '../services/authService';
 
-interface AuthContextType extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<void>;
-  logout: () => void;
-}
+const AuthContext = createContext<AuthContextType | null>(null);
 
-const initialState: AuthState = {
-  user: null,
-  accessToken: null,
-  refreshToken: null,
-  isAuthenticated: false,
-  isLoading: true,
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, setState] = useState<AuthState>(initialState);
-  const navigate = useNavigate();
+  const [state, setState] = useState<AuthState>({
+    user: authService.getCurrentUser(),
+    tokens: authService.getTokens(),
+    isAuthenticated: !!authService.getCurrentUser(),
+    isLoading: true,
+  });
 
   useEffect(() => {
-    const initAuth = () => {
-      const accessToken = localStorage.getItem('accessToken');
-      const refreshToken = localStorage.getItem('refreshToken');
-      const user = authService.getCurrentUser();
-
-      setState({
-        user,
-        accessToken,
-        refreshToken,
-        isAuthenticated: !!accessToken,
-        isLoading: false,
-      });
+    const initializeAuth = async () => {
+      try {
+        if (state.tokens) {
+          await authService.refreshTokens();
+        }
+      } catch (error) {
+        authService.logout();
+        setState(prev => ({
+          ...prev,
+          user: null,
+          tokens: null,
+          isAuthenticated: false,
+        }));
+      } finally {
+        setState(prev => ({ ...prev, isLoading: false }));
+      }
     };
 
-    initAuth();
+    initializeAuth();
   }, []);
 
   const login = async (credentials: LoginCredentials) => {
-    try {
-      const response = await authService.login(credentials);
-      const { accessToken, refreshToken, user } = response;
-
-      setState({
-        user,
-        accessToken,
-        refreshToken,
-        isAuthenticated: true,
-        isLoading: false,
-      });
-
-      navigate('/dashboard');
-    } catch (error) {
-      setState(prev => ({ ...prev, isLoading: false }));
-      throw error;
-    }
+    const { user, tokens } = await authService.login(credentials);
+    setState({
+      user,
+      tokens,
+      isAuthenticated: true,
+      isLoading: false,
+    });
   };
 
   const logout = () => {
     authService.logout();
-    setState(initialState);
-    navigate('/login');
+    setState({
+      user: null,
+      tokens: null,
+      isAuthenticated: false,
+      isLoading: false,
+    });
   };
 
-  return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+  const refreshTokens = async () => {
+    const newTokens = await authService.refreshTokens();
+    setState(prev => ({
+      ...prev,
+      tokens: newTokens,
+    }));
+  };
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+  const value = {
+    ...state,
+    login,
+    logout,
+    refreshTokens,
+  };
+
+  if (state.isLoading) {
+    return <div>Loading...</div>; // Considera usar un componente de loading más elaborado
   }
-  return context;
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }; 

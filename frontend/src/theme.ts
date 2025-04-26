@@ -41,7 +41,16 @@ export const theme = (mode: "light" | "dark") => createTheme({
   palette: mode === "light" ? lightPalette : darkPalette,
   typography: {
     fontFamily: [
-      'Inter', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
     ].join(','),
     fontSize: 14,
   },

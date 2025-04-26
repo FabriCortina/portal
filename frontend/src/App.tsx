@@ -1,19 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
+import CssBaseline from '@mui/material/CssBaseline';
 import { useTranslation } from 'react-i18next';
 import { theme } from './theme';
 import ThemeSwitcher from './components/ThemeSwitcher';
-import { LoginPage } from './pages/auth/LoginPage';
-import { ProtectedRoute } from './components/auth/ProtectedRoute';
-import { OperationsPage } from './pages/operations/OperationsPage';
-import { AuthProvider } from './contexts/AuthContext';
-import { ThemeProvider as CustomThemeProvider } from './contexts/ThemeContext';
-import { Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
 
+// Componente para proteger rutas
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const auth = useAuth();
 
-const App = () => {
+  if (auth.isLoading) {
+    return <div>Loading...</div>; // Considera usar un componente de loading más elaborado
+  }
+
+  if (!auth.isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const App: React.FC = () => {
   const { i18n } = useTranslation();
 
   const [mode, setMode] = useState<"light" | "dark">("light");
@@ -34,32 +45,25 @@ const App = () => {
   };
 
   return (
-    <CustomThemeProvider>
-    <ThemeProvider theme={theme(mode)}>
-      <CssBaseline />
-      <AuthProvider>
-        <Router>
-          {/* Switch para cambiar tema */}
-          
-          <ThemeSwitcher />
-
-          {/* Ruteo de pantallas */}
+    <Router>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AuthProvider>
           <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} /> {}
             <Route path="/login" element={<LoginPage />} />
             <Route
-              path="/operations"
+              path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <OperationsPage />
+                  <DashboardPage />
                 </ProtectedRoute>
               }
             />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
-        </Router>
-      </AuthProvider>
-    </ThemeProvider>
-    </CustomThemeProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </Router>
   );
 };
 
