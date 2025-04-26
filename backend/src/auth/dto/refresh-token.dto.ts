@@ -3,10 +3,10 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class RefreshTokenDto {
   @ApiProperty({
+    description: 'Token de actualización',
     example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-    description: 'Token de refresco JWT',
   })
-  @IsString({ message: 'El token de refresco debe ser una cadena de texto' })
-  @IsNotEmpty({ message: 'El token de refresco es requerido' })
-  refreshToken: string;
+  @IsString()
+  @IsNotEmpty()
+  refreshToken!: string;
 } 

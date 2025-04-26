@@ -1,11 +1,22 @@
-import { IsString, IsEmail, IsNotEmpty, MinLength, Matches } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, MinLength, Matches, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterOperationsDto {
-  @ApiProperty({ example: 'Juan Pérez', description: 'Nombre completo del usuario de operaciones' })
+  @ApiProperty({
+    description: 'Nombre de la operación',
+    example: 'Crear Usuario',
+  })
   @IsString()
-  @IsNotEmpty({ message: 'El nombre es requerido' })
-  name: string;
+  @IsNotEmpty()
+  name!: string;
+
+  @ApiProperty({
+    description: 'Lista de permisos',
+    example: ['read', 'write'],
+  })
+  @IsArray()
+  @IsString({ each: true })
+  permissions!: string[];
 
   @ApiProperty({ example: 'operaciones@sooft.com', description: 'Correo electrónico corporativo' })
   @IsEmail({}, { message: 'El correo electrónico no es válido' })

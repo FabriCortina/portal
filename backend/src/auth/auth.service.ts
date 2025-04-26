@@ -17,83 +17,50 @@ export class AuthService {
     private configService: ConfigService,
   ) {}
 
-  async validateUser(email: string, password: string) {
+  async validateUser(email: string, password: string): Promise<any> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    if (user && await bcrypt.compare(password, user.password)) {
+      const { password, ...result } = user;
+      return result;
+    }
+    return null;
+  }
+
+  async login(credentials: LoginDto): Promise<TokensDto> {
+    const user = await this.validateUser(credentials.email, credentials.password);
+    if (!user) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    const tokens = await this.generateTokens(user);
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+
+    return tokens;
+  }
+
+  async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<TokensDto> {
     try {
+      const { sub: userId } = await this.jwtService.verifyAsync(
+        refreshTokenDto.refreshToken,
+        {
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        },
+      );
+
       const user = await this.prisma.user.findUnique({
-        where: { email },
+        where: { id: userId },
       });
 
-      if (user && await bcrypt.compare(password, user.password)) {
-        const { password: _, ...result } = user;
-        return result;
-      }
-      return null;
-    } catch (error) {
-      throw new InternalServerErrorException('Error al validar el usuario');
-    }
-  }
-
-  async login(dto: LoginDto): Promise<TokensDto> {
-    try {
-      const user = await this.validateUser(dto.email, dto.password);
-      if (!user) {
-        throw new UnauthorizedException('Credenciales inválidas');
+      if (!user || !user.refreshToken) {
+        throw new UnauthorizedException('Token de actualización inválido');
       }
 
-      const tokens = await this.generateTokens(user.id, user.email);
-      await this.saveRefreshToken(user.id, tokens.refreshToken);
-      return tokens;
-    } catch (error) {
-      if (error instanceof UnauthorizedException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('Error al iniciar sesión');
-    }
-  }
-
-  async refreshToken(dto: RefreshTokenDto): Promise<TokensDto> {
-    try {
-      // Verificar el token en la base de datos
-      const refreshToken = await this.prisma.refreshToken.findUnique({
-        where: { token: dto.refreshToken },
-        include: { user: true },
-      });
-
-      if (!refreshToken) {
-        throw new UnauthorizedException('Token de refresco inválido');
-      }
-
-      // Verificar el token JWT
-      const payload = this.jwtService.verify(dto.refreshToken, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-      });
-
-      if (payload.sub !== refreshToken.user.id) {
-        throw new UnauthorizedException('Token de refresco inválido');
-      }
-
-      // Generar nuevos tokens
-      const tokens = await this.generateTokens(refreshToken.user.id, refreshToken.user.email);
-
-      // Eliminar el token viejo y guardar el nuevo
-      await this.prisma.$transaction([
-        this.prisma.refreshToken.delete({
-          where: { id: refreshToken.id },
-        }),
-        this.prisma.refreshToken.create({
-          data: {
-            token: tokens.refreshToken,
-            userId: refreshToken.user.id,
-          },
-        }),
-      ]);
+      const tokens = await this.generateTokens(user);
+      await this.updateRefreshToken(user.id, tokens.refreshToken);
 
       return tokens;
-    } catch (error) {
-      if (error instanceof UnauthorizedException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('Error al refrescar el token');
+    } catch {
+      throw new UnauthorizedException('Token de actualización inválido');
     }
   }
 
@@ -107,50 +74,46 @@ export class AuthService {
     }
   }
 
-  private async generateTokens(userId: string, email: string): Promise<TokensDto> {
-    try {
-      const [accessToken, refreshToken] = await Promise.all([
-        this.jwtService.signAsync(
-          { sub: userId, email },
-          {
-            secret: this.configService.get<string>('JWT_SECRET'),
-            expiresIn: this.configService.get<string>('JWT_EXPIRATION'),
-          },
-        ),
-        this.jwtService.signAsync(
-          { sub: userId, email },
-          {
-            secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-            expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION'),
-          },
-        ),
-      ]);
+  private async generateTokens(user: any): Promise<TokensDto> {
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          sub: user.id,
+          email: user.email,
+          role: user.role,
+          tenantId: user.tenantId,
+        },
+        {
+          secret: this.configService.get<string>('JWT_SECRET'),
+          expiresIn: this.configService.get<string>('JWT_EXPIRATION'),
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          sub: user.id,
+          email: user.email,
+          role: user.role,
+          tenantId: user.tenantId,
+        },
+        {
+          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+          expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION'),
+        },
+      ),
+    ]);
 
-      return {
-        accessToken,
-        refreshToken,
-      };
-    } catch (error) {
-      throw new InternalServerErrorException('Error al generar los tokens');
-    }
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
-  private async saveRefreshToken(userId: string, token: string): Promise<void> {
-    try {
-      await this.prisma.refreshToken.create({
-        data: {
-          token,
-          userId,
-        },
-      });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new ConflictException('Token de refresco duplicado');
-        }
-      }
-      throw new InternalServerErrorException('Error al guardar el token de refresco');
-    }
+  private async updateRefreshToken(userId: string, refreshToken: string): Promise<void> {
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { refreshToken: hashedRefreshToken },
+    });
   }
 
   async registerOperations(dto: RegisterOperationsDto): Promise<{ message: string }> {

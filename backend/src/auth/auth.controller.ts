@@ -7,25 +7,36 @@ import { RegisterOperationsDto } from './dto/register-operations.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { Roles } from './decorators/roles.decorator';
+import { TokensDto } from './dto/tokens.dto';
+import { RefreshTokenGuard } from './guards/refresh-token.guard';
 
-@ApiTags('auth')
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @ApiOperation({ summary: 'Iniciar sesión' })
-  @ApiResponse({ status: 200, description: 'Login exitoso' })
+  @ApiResponse({
+    status: 200,
+    description: 'Login exitoso',
+    type: TokensDto,
+  })
   @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
-  async login(@Body() loginDto: LoginDto) {
+  async login(@Body() loginDto: LoginDto): Promise<TokensDto> {
     return this.authService.login(loginDto);
   }
 
   @Post('refresh')
-  @ApiOperation({ summary: 'Refrescar token de acceso' })
-  @ApiResponse({ status: 200, description: 'Token refrescado exitosamente' })
-  @ApiResponse({ status: 401, description: 'Token de refresco inválido' })
-  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+  @UseGuards(RefreshTokenGuard)
+  @ApiOperation({ summary: 'Renovar tokens' })
+  @ApiResponse({
+    status: 200,
+    description: 'Tokens renovados exitosamente',
+    type: TokensDto,
+  })
+  @ApiResponse({ status: 401, description: 'Token de actualización inválido' })
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokensDto> {
     return this.authService.refreshToken(refreshTokenDto);
   }
 
