@@ -1,0 +1,113 @@
+{
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "remember": "Remember me",
+      "forgot_password": "Forgot your password?",
+      "errors": {
+        "invalid_credentials": "Invalid credentials",
+        "required_field": "This field is required",
+        "invalid_email": "Invalid email address"
+      }
+    }
+  },
+  "sync": {
+    "sheetId": "Spreadsheet ID",
+    "range": "Cell range",
+    "updateFrequency": "Update frequency",
+    "everyXHours": "Every {{hours}} hours",
+    "saveConfig": "Save configuration",
+    "forceSync": "Force sync",
+    "configSuccess": "Configuration saved successfully",
+    "configError": "Error saving configuration",
+    "forceSuccess": "Forced sync started",
+    "forceError": "Error forcing sync"
+  },
+  "operations": {
+    "title": "Operations",
+    "description": "Manage tracking, queries and metrics for your collaborators.",
+    "tracking": "Tracking",
+    "queries": "Queries",
+    "metrics": "Metrics"
+  },
+  "tracking": {
+    "collaborator": "Collaborator",
+    "sprintPercentage": "Sprint Percentage",
+    "bugsCount": "Bugs Count",
+    "feedback": "Feedback",
+    "last15DaysSatisfaction": "Last 15 Days Satisfaction",
+    "issuesToResolve": "Issues to Resolve",
+    "submit": "Save Tracking",
+    "createSuccess": "Tracking created successfully",
+    "createError": "Error creating tracking",
+    "history": {
+      "title": "Tracking History",
+      "description": "View the complete tracking history of the collaborator.",
+      "error": "Error loading tracking history",
+      "noData": "No tracking records found",
+      "date": "Date",
+      "sprintProgress": "Sprint Progress",
+      "bugs": "Bugs",
+      "satisfaction": "Satisfaction",
+      "issues": "Issues to resolve"
+    }
+  },
+  "query": {
+    "collaborator": "Collaborator",
+    "topicType": "Topic Type",
+    "problemDescription": "Problem Description",
+    "resolver": "Resolver",
+    "attachments": "Attachments",
+    "addAttachment": "Add URL or link",
+    "add": "Add",
+    "removeAttachment": "Remove attachment",
+    "submit": "Save Query",
+    "createSuccess": "Query created successfully",
+    "createError": "Error creating query"
+  },
+  "metrics": {
+    "client": "Client",
+    "averageRotation": "Average Rotation",
+    "averageSatisfaction": "Average Satisfaction",
+    "completedSprintsPercentage": "Completed Sprints Percentage",
+    "averageBugs": "Average Bugs",
+    "marketMetrics": "Market Metrics",
+    "submit": "Save Metrics",
+    "createSuccess": "Metrics saved successfully",
+    "createError": "Error saving metrics",
+    "title": "Collaborator Metrics",
+    "description": "View the historical evolution of collaborator metrics.",
+    "error": "Error loading metrics",
+    "date": "Date",
+    "rotation": "Rotation",
+    "satisfaction": "Satisfaction",
+    "sprintCompletion": "Completed Sprints",
+    "noData": "No data available",
+    "loading": "Loading metrics..."
+  },
+  "dashboard": {
+    "title": "Client Dashboard",
+    "collaborators": {
+      "title": "Collaborators",
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "satisfaction": "Satisfaction"
+    },
+    "metrics": {
+      "title": "Metrics",
+      "roleDistribution": "Role Distribution",
+      "marketComparison": "Market Comparison",
+      "trends": "Trends",
+      "client": "Client",
+      "market": "Market",
+      "rotation": "Rotation",
+      "satisfaction": "Satisfaction",
+      "roles": "Roles",
+      "average": "Average"
+    }
+  }
+} 

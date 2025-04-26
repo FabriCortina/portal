@@ -1,0 +1,93 @@
+{
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "submit": "Ingresar",
+      "remember": "Recordarme",
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "errors": {
+        "invalid_credentials": "Credenciales inválidas",
+        "required_field": "Este campo es requerido",
+        "invalid_email": "Correo electrónico inválido"
+      }
+    }
+  },
+  "sync": {
+    "title": "Configuración de sincronización",
+    "description": "Configure la sincronización automática de colaboradores desde Google Sheets. Especifique el ID de la hoja de cálculo, el rango de celdas y la frecuencia de actualización.",
+    "sheetId": "ID de la hoja de cálculo",
+    "range": "Rango de celdas",
+    "updateFrequency": "Frecuencia de actualización",
+    "everyXHours": "Cada {{hours}} horas",
+    "saveConfig": "Guardar configuración",
+    "forceSync": "Forzar sincronización",
+    "configSuccess": "Configuración guardada correctamente",
+    "configError": "Error al guardar la configuración",
+    "forceSuccess": "Sincronización forzada iniciada",
+    "forceError": "Error al forzar la sincronización"
+  },
+  "operations": {
+    "title": "Operaciones",
+    "description": "Gestione los seguimientos, consultas y métricas de sus colaboradores.",
+    "tracking": "Seguimientos",
+    "queries": "Consultas",
+    "metrics": "Métricas"
+  },
+  "tracking": {
+    "collaborator": "Colaborador",
+    "sprintPercentage": "Porcentaje de Sprint",
+    "bugsCount": "Cantidad de Bugs",
+    "feedback": "Feedback",
+    "last15DaysSatisfaction": "Satisfacción últimos 15 días",
+    "issuesToResolve": "Problemas a resolver",
+    "submit": "Guardar seguimiento",
+    "createSuccess": "Seguimiento creado correctamente",
+    "createError": "Error al crear el seguimiento",
+    "history": {
+      "title": "Historial de Seguimientos",
+      "description": "Visualiza el historial completo de seguimientos del colaborador.",
+      "error": "Error al cargar el historial de seguimientos",
+      "noData": "No hay seguimientos registrados",
+      "date": "Fecha",
+      "sprintProgress": "Progreso del Sprint",
+      "bugs": "Bugs",
+      "satisfaction": "Satisfacción",
+      "issues": "Problemas a resolver"
+    }
+  },
+  "query": {
+    "collaborator": "Colaborador",
+    "topicType": "Tipo de tema",
+    "problemDescription": "Descripción del problema",
+    "resolver": "Resolvedor",
+    "attachments": "Adjuntos",
+    "addAttachment": "Agregar URL o enlace",
+    "add": "Agregar",
+    "removeAttachment": "Eliminar adjunto",
+    "submit": "Guardar consulta",
+    "createSuccess": "Consulta creada correctamente",
+    "createError": "Error al crear la consulta"
+  },
+  "metrics": {
+    "client": "Cliente",
+    "averageRotation": "Rotación promedio",
+    "averageSatisfaction": "Satisfacción promedio",
+    "completedSprintsPercentage": "Porcentaje de sprints completados",
+    "averageBugs": "Promedio de bugs",
+    "marketMetrics": "Métricas de mercado",
+    "submit": "Guardar métricas",
+    "createSuccess": "Métricas guardadas correctamente",
+    "createError": "Error al guardar las métricas",
+    "title": "Métricas del Colaborador",
+    "description": "Visualiza la evolución histórica de las métricas del colaborador.",
+    "error": "Error al cargar las métricas",
+    "date": "Fecha",
+    "rotation": "Rotación",
+    "satisfaction": "Satisfacción",
+    "sprintCompletion": "Sprints Completados",
+    "noData": "No hay datos disponibles",
+    "loading": "Cargando métricas..."
+  }
+} 

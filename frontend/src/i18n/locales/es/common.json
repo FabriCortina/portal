@@ -1,0 +1,47 @@
+{
+  "navigation": {
+    "dashboard": "Dashboard",
+    "clients": "Clientes",
+    "collaborators": "Colaboradores",
+    "trackings": "Seguimientos",
+    "queries": "Consultas",
+    "metrics": "Métricas"
+  },
+  "actions": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "create": "Crear",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "close": "Cerrar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior"
+  },
+  "status": {
+    "loading": "Cargando...",
+    "error": "Error",
+    "success": "Éxito",
+    "warning": "Advertencia",
+    "info": "Información"
+  },
+  "theme": {
+    "light": "Modo Claro",
+    "dark": "Modo Oscuro",
+    "system": "Usar Configuración del Sistema"
+  },
+  "language": {
+    "en": "English",
+    "es": "Español"
+  },
+  "errors": {
+    "generic": "Ha ocurrido un error",
+    "network": "Error de conexión",
+    "unauthorized": "No autorizado",
+    "forbidden": "Acceso denegado",
+    "notFound": "No encontrado",
+    "validation": "Error de validación"
+  }
+} 
