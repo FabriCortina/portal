@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../infrastructure/prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { TokensDto } from './dto/tokens.dto';
+import { RegisterOperationsDto } from './dto/register-operations.dto';
 import * as bcrypt from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 
@@ -112,5 +113,48 @@ export class AuthService {
         userId,
       },
     });
+  }
+
+  async registerOperations(dto: RegisterOperationsDto): Promise<{ message: string }> {
+    try {
+      // Verificar si el usuario ya existe
+      const existingUser = await this.prisma.user.findUnique({
+        where: { email: dto.email },
+      });
+
+      if (existingUser) {
+        throw new ConflictException('El correo electrónico ya está registrado');
+      }
+
+      // Buscar el tenant sooft
+      const sooftTenant = await this.prisma.tenant.findUnique({
+        where: { name: 'sooft' },
+      });
+
+      if (!sooftTenant) {
+        throw new NotFoundException('No se encontró el tenant sooft');
+      }
+
+      // Hashear la contraseña
+      const hashedPassword = await bcrypt.hash(dto.password, 10);
+
+      // Crear el usuario
+      await this.prisma.user.create({
+        data: {
+          email: dto.email,
+          password: hashedPassword,
+          name: dto.name,
+          role: 'operations',
+          tenantId: sooftTenant.id,
+        },
+      });
+
+      return { message: 'Usuario de operaciones registrado exitosamente' };
+    } catch (error) {
+      if (error instanceof ConflictException || error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error('Error al registrar el usuario de operaciones');
+    }
   }
 } 
