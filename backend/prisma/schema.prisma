@@ -37,8 +37,20 @@ model User {
   tenant    Tenant   @relation(fields: [tenantId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  refreshTokens RefreshToken[]
 
   @@index([tenantId])
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model Client {
@@ -215,3 +227,5 @@ model SheetConfig {
   @@unique([tenantId])
   @@index([tenantId])
 }
+
+

@@ -33,27 +33,52 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    return this.generateTokens(user.id, user.email);
+    const tokens = await this.generateTokens(user.id, user.email);
+    await this.saveRefreshToken(user.id, tokens.refreshToken);
+    return tokens;
   }
 
   async refreshToken(dto: RefreshTokenDto): Promise<TokensDto> {
     try {
+      // Verificar el token en la base de datos
+      const refreshToken = await this.prisma.refreshToken.findUnique({
+        where: { token: dto.refreshToken },
+        include: { user: true },
+      });
+
+      if (!refreshToken) {
+        throw new UnauthorizedException('Token de refresco inválido');
+      }
+
+      // Verificar el token JWT
       const payload = this.jwtService.verify(dto.refreshToken, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
       });
 
-      const user = await this.prisma.user.findUnique({
-        where: { id: payload.sub },
-      });
-
-      if (!user) {
-        throw new UnauthorizedException();
+      if (payload.sub !== refreshToken.user.id) {
+        throw new UnauthorizedException('Token de refresco inválido');
       }
 
-      return this.generateTokens(user.id, user.email);
+      // Generar nuevos tokens
+      const tokens = await this.generateTokens(refreshToken.user.id, refreshToken.user.email);
+
+      // Eliminar el token viejo y guardar el nuevo
+      await this.prisma.refreshToken.delete({
+        where: { id: refreshToken.id },
+      });
+      await this.saveRefreshToken(refreshToken.user.id, tokens.refreshToken);
+
+      return tokens;
     } catch (error) {
       throw new UnauthorizedException('Token de refresco inválido');
     }
+  }
+
+  async logout(userId: string): Promise<void> {
+    // Eliminar todos los refresh tokens del usuario
+    await this.prisma.refreshToken.deleteMany({
+      where: { userId },
+    });
   }
 
   private async generateTokens(userId: string, email: string): Promise<TokensDto> {
@@ -78,5 +103,14 @@ export class AuthService {
       accessToken,
       refreshToken,
     };
+  }
+
+  private async saveRefreshToken(userId: string, token: string): Promise<void> {
+    await this.prisma.refreshToken.create({
+      data: {
+        token,
+        userId,
+      },
+    });
   }
 } 
