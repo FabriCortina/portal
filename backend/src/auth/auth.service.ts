@@ -1,10 +1,10 @@
 import { Injectable, UnauthorizedException, ConflictException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma/prisma.service';
-import { LoginDto } from './dto/login.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { TokensDto } from './dto/tokens.dto';
+import { PrismaService } from '@/prisma/prisma.service';
+import { LoginDto } from '@/auth/dto/login.dto';
+import { RefreshTokenDto } from '@/auth/dto/refresh-token.dto';
+import { TokensDto } from '@/auth/dto/tokens.dto';
 import { RegisterOperationsDto } from './dto/register-operations.dto';
 import * as bcrypt from 'bcrypt';
 import { Prisma } from '@prisma/client';

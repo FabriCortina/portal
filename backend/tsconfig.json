@@ -17,6 +17,18 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "strictPropertyInitialization": false
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["src/*"],
+      "@/auth/*": ["src/auth/*"],
+      "@/common/*": ["src/common/*"],
+      "@/prisma/*": ["src/prisma/*"],
+      "@/config/*": ["src/config/*"],
+      "@/users/*": ["src/users/*"],
+      "@/collaborators/*": ["src/collaborators/*"],
+      "@/metrics/*": ["src/metrics/*"],
+      "@/dashboard/*": ["src/dashboard/*"]
+    }
   }
 }
