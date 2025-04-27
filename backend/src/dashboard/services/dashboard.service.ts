@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import { DashboardMetricsDto, RoleDistributionDto, ProvinceDistributionDto, HistoricalMetricsDto } from '../dto/dashboard-metrics.dto';
 
 @Injectable()
@@ -88,36 +88,42 @@ export class DashboardService {
     const turnoverMetrics = await this.prisma.metric.findMany({
       where: {
         tenantId,
-        type: 'TURNOVER_RATE',
+        marketMetrics: {
+          path: ['type'],
+          equals: 'TURNOVER_RATE'
+        },
         createdAt: {
           gte: new Date(new Date().setMonth(new Date().getMonth() - 12))
         }
       },
       select: {
-        value: true
+        marketMetrics: true
       }
     });
 
     if (!turnoverMetrics.length) return 0;
-    return turnoverMetrics.reduce((sum, metric) => sum + metric.value, 0) / turnoverMetrics.length;
+    return turnoverMetrics.reduce((sum, metric) => sum + (metric.marketMetrics as any).value, 0) / turnoverMetrics.length;
   }
 
   private async getAverageSatisfactionRate(tenantId: string): Promise<number> {
     const satisfactionMetrics = await this.prisma.metric.findMany({
       where: {
         tenantId,
-        type: 'SATISFACTION_RATE',
+        marketMetrics: {
+          path: ['type'],
+          equals: 'SATISFACTION_RATE'
+        },
         createdAt: {
           gte: new Date(new Date().setMonth(new Date().getMonth() - 12))
         }
       },
       select: {
-        value: true
+        marketMetrics: true
       }
     });
 
     if (!satisfactionMetrics.length) return 0;
-    return satisfactionMetrics.reduce((sum, metric) => sum + metric.value, 0) / satisfactionMetrics.length;
+    return satisfactionMetrics.reduce((sum, metric) => sum + (metric.marketMetrics as any).value, 0) / satisfactionMetrics.length;
   }
 
   private async getHistoricalMetrics(tenantId: string): Promise<HistoricalMetricsDto[]> {
@@ -136,22 +142,28 @@ export class DashboardService {
       this.prisma.metric.findMany({
         where: {
           tenantId,
-          type: 'TURNOVER_RATE',
+          marketMetrics: {
+            path: ['type'],
+            equals: 'TURNOVER_RATE'
+          },
           createdAt: { gte: startDate }
         },
         select: {
-          value: true,
+          marketMetrics: true,
           createdAt: true
         }
       }),
       this.prisma.metric.findMany({
         where: {
           tenantId,
-          type: 'SATISFACTION_RATE',
+          marketMetrics: {
+            path: ['type'],
+            equals: 'SATISFACTION_RATE'
+          },
           createdAt: { gte: startDate }
         },
         select: {
-          value: true,
+          marketMetrics: true,
           createdAt: true
         }
       })
@@ -184,7 +196,7 @@ export class DashboardService {
           satisfactionRate: 0
         });
       }
-      monthlyData.get(monthKey)!.turnoverRate = item.value;
+      monthlyData.get(monthKey)!.turnoverRate = (item.marketMetrics as any).value;
     });
 
     // Procesar métricas de satisfacción
@@ -198,7 +210,7 @@ export class DashboardService {
           satisfactionRate: 0
         });
       }
-      monthlyData.get(monthKey)!.satisfactionRate = item.value;
+      monthlyData.get(monthKey)!.satisfactionRate = (item.marketMetrics as any).value;
     });
 
     return Array.from(monthlyData.values())

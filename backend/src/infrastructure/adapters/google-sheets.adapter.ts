@@ -2,7 +2,7 @@ import { google } from 'googleapis';
 import { authenticate } from '@google-cloud/local-auth';
 import { GoogleSheetsPort } from '../../domain/ports/google-sheets.port';
 import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import * as path from 'path';
 
 @Injectable()
@@ -46,7 +46,7 @@ export class GoogleSheetsAdapter implements GoogleSheetsPort {
     try {
       // Actualizar o crear colaboradores
       for (const row of data) {
-        const [name, role] = row;
+        const [name, role, dni, cuit, sooftEmail, personalEmail] = row;
         await this.prisma.collaborator.upsert({
           where: {
             tenantId_name: {
@@ -57,11 +57,19 @@ export class GoogleSheetsAdapter implements GoogleSheetsPort {
           create: {
             name,
             role,
+            dni,
+            cuit,
+            sooftEmail,
+            personalEmail,
             isActive: true,
             tenantId
           },
           update: {
             role,
+            dni,
+            cuit,
+            sooftEmail,
+            personalEmail,
             isActive: true
           }
         });
@@ -75,6 +83,9 @@ export class GoogleSheetsAdapter implements GoogleSheetsPort {
         create: {
           tenantId,
           spreadsheetId,
+          sheetName: 'Colaboradores',
+          range: 'A2:F',
+          updateFrequency: 'daily',
           lastSyncDate: new Date()
         },
         update: {
