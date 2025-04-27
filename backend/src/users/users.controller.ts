@@ -2,10 +2,11 @@ import { Controller, Get, Post, Body, Param, UseGuards, ParseUUIDPipe } from '@n
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { CurrentUser, CurrentUserType } from '../auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@/common/guards/roles.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
+import { TenantId } from '@/common/decorators/tenant-id.decorator';
 
 @ApiTags('users')
 @Controller('users')

@@ -1,12 +1,13 @@
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { AuthService } from '@/auth/auth.service';
+import { LoginDto, RegisterDto, RefreshTokenDto } from './dto/auth.dto';
 import { RegisterOperationsDto } from './dto/register-operations.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { RolesGuard } from './guards/roles.guard';
-import { Roles } from './decorators/roles.decorator';
+import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@/common/guards/roles.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
+import { TenantId } from '@/common/decorators/tenant-id.decorator';
 import { TokensDto } from './dto/tokens.dto';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
 

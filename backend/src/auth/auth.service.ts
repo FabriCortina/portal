@@ -1,103 +1,77 @@
 import { Injectable, UnauthorizedException, ConflictException, NotFoundException, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { TokensDto } from './dto/tokens.dto';
 import { RegisterOperationsDto } from './dto/register-operations.dto';
 import * as bcrypt from 'bcrypt';
-import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prisma: PrismaService,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.prisma.user.findUnique({ where: { email } });
-    if (user && await bcrypt.compare(password, user.password)) {
-      const { password, ...result } = user;
-      return result;
-    }
-    return null;
-  }
+  async login(loginDto: LoginDto): Promise<TokensDto> {
+    const user = await this.prisma.user.findUnique({
+      where: { email: loginDto.email },
+    });
 
-  async login(credentials: LoginDto): Promise<TokensDto> {
-    const user = await this.validateUser(credentials.email, credentials.password);
     if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
-    const tokens = await this.generateTokens(user);
+    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const tokens = await this.getTokens(user.id, user.email);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
   }
 
-  async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<TokensDto> {
-    try {
-      const { sub: userId } = await this.jwtService.verifyAsync(
-        refreshTokenDto.refreshToken,
-        {
-          secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        },
-      );
+  async refreshTokens(refreshTokenDto: RefreshTokenDto): Promise<TokensDto> {
+    const user = await this.prisma.user.findFirst({
+      where: { refreshToken: refreshTokenDto.refreshToken },
+    });
 
-      const user = await this.prisma.user.findUnique({
-        where: { id: userId },
-      });
-
-      if (!user || !user.refreshToken) {
-        throw new UnauthorizedException('Token de actualización inválido');
-      }
-
-      const tokens = await this.generateTokens(user);
-      await this.updateRefreshToken(user.id, tokens.refreshToken);
-
-      return tokens;
-    } catch {
-      throw new UnauthorizedException('Token de actualización inválido');
+    if (!user) {
+      throw new UnauthorizedException('Invalid refresh token');
     }
+
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateRefreshToken(user.id, tokens.refreshToken);
+
+    return tokens;
   }
 
-  async logout(userId: string): Promise<void> {
-    try {
-      await this.prisma.refreshToken.deleteMany({
-        where: { userId },
-      });
-    } catch (error) {
-      throw new InternalServerErrorException('Error al cerrar sesión');
-    }
-  }
-
-  private async generateTokens(user: any): Promise<TokensDto> {
+  private async getTokens(userId: string, email: string): Promise<TokensDto> {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          sub: user.id,
-          email: user.email,
-          role: user.role,
-          tenantId: user.tenantId,
+          sub: userId,
+          email,
         },
         {
-          secret: this.configService.get<string>('JWT_SECRET'),
-          expiresIn: this.configService.get<string>('JWT_EXPIRATION'),
+          secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+          expiresIn: '15m',
         },
       ),
       this.jwtService.signAsync(
         {
-          sub: user.id,
-          email: user.email,
-          role: user.role,
-          tenantId: user.tenantId,
+          sub: userId,
+          email,
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-          expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRATION'),
+          expiresIn: '7d',
         },
       ),
     ]);
