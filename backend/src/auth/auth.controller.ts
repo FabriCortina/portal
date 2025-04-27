@@ -28,7 +28,7 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @Post('refresh')
+  @Post('refresh-token')
   @UseGuards(RefreshTokenGuard)
   @ApiOperation({ summary: 'Renovar tokens' })
   @ApiResponse({
@@ -38,7 +38,7 @@ export class AuthController {
   })
   @ApiResponse({ status: 401, description: 'Token de actualización inválido' })
   async refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokensDto> {
-    return this.authService.refreshToken(refreshTokenDto);
+    return this.authService.refreshTokens(refreshTokenDto);
   }
 
   @Post('logout')

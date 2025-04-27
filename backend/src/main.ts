@@ -30,12 +30,12 @@ async function bootstrap() {
   // Swagger
   const config = new DocumentBuilder()
     .setTitle('Portal API')
-    .setDescription('API del Portal de Gestión')
+    .setDescription('API para el portal de gestión')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  SwaggerModule.setup('api', app, document);
 
   const port = configService.get<number>('PORT', 3001);
   await app.listen(port);
