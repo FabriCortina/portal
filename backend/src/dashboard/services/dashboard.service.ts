@@ -37,8 +37,7 @@ export class DashboardService {
     return this.prisma.collaborator.count({
       where: {
         tenantId,
-        isActive: true,
-        deletedAt: null
+        isActive: true
       }
     });
   }
@@ -48,8 +47,7 @@ export class DashboardService {
       by: ['role'],
       where: {
         tenantId,
-        isActive: true,
-        deletedAt: null
+        isActive: true
       },
       _count: {
         role: true
@@ -70,8 +68,7 @@ export class DashboardService {
       by: ['province'],
       where: {
         tenantId,
-        isActive: true,
-        deletedAt: null
+        isActive: true
       },
       _count: {
         province: true
@@ -93,7 +90,7 @@ export class DashboardService {
         tenantId,
         type: 'TURNOVER_RATE',
         createdAt: {
-          gte: new Date(new Date().setMonth(new Date().getMonth() - 12)) // Últimos 12 meses
+          gte: new Date(new Date().setMonth(new Date().getMonth() - 12))
         }
       },
       select: {
@@ -111,7 +108,7 @@ export class DashboardService {
         tenantId,
         type: 'SATISFACTION_RATE',
         createdAt: {
-          gte: new Date(new Date().setMonth(new Date().getMonth() - 12)) // Últimos 12 meses
+          gte: new Date(new Date().setMonth(new Date().getMonth() - 12))
         }
       },
       select: {
@@ -126,19 +123,16 @@ export class DashboardService {
   private async getHistoricalMetrics(tenantId: string): Promise<HistoricalMetricsDto[]> {
     const startDate = new Date(new Date().setMonth(new Date().getMonth() - 12));
     
-    const historicalData = await this.prisma.$transaction([
-      // Colaboradores activos por mes
+    const [activeCollaborators, turnoverMetrics, satisfactionMetrics] = await Promise.all([
       this.prisma.collaborator.groupBy({
         by: ['createdAt'],
         where: {
           tenantId,
-          createdAt: { gte: startDate },
           isActive: true,
-          deletedAt: null
+          createdAt: { gte: startDate }
         },
         _count: true
       }),
-      // Métricas de rotación
       this.prisma.metric.findMany({
         where: {
           tenantId,
@@ -150,7 +144,6 @@ export class DashboardService {
           createdAt: true
         }
       }),
-      // Métricas de satisfacción
       this.prisma.metric.findMany({
         where: {
           tenantId,
@@ -164,35 +157,48 @@ export class DashboardService {
       })
     ]);
 
-    // Agrupar por mes
     const monthlyData = new Map<string, HistoricalMetricsDto>();
     
-    // Procesar cada conjunto de datos
-    historicalData.forEach((dataset, index) => {
-      dataset.forEach(item => {
-        const monthKey = item.createdAt.toISOString().slice(0, 7);
-        if (!monthlyData.has(monthKey)) {
-          monthlyData.set(monthKey, {
-            date: new Date(item.createdAt),
-            activeCollaborators: 0,
-            turnoverRate: 0,
-            satisfactionRate: 0
-          });
-        }
-        
-        const entry = monthlyData.get(monthKey)!;
-        switch (index) {
-          case 0: // Colaboradores activos
-            entry.activeCollaborators = (item as any)._count;
-            break;
-          case 1: // Rotación
-            entry.turnoverRate = item.value;
-            break;
-          case 2: // Satisfacción
-            entry.satisfactionRate = item.value;
-            break;
-        }
-      });
+    // Procesar colaboradores activos
+    activeCollaborators.forEach(item => {
+      const monthKey = item.createdAt.toISOString().slice(0, 7);
+      if (!monthlyData.has(monthKey)) {
+        monthlyData.set(monthKey, {
+          date: new Date(item.createdAt),
+          activeCollaborators: 0,
+          turnoverRate: 0,
+          satisfactionRate: 0
+        });
+      }
+      monthlyData.get(monthKey)!.activeCollaborators = item._count;
+    });
+
+    // Procesar métricas de rotación
+    turnoverMetrics.forEach(item => {
+      const monthKey = item.createdAt.toISOString().slice(0, 7);
+      if (!monthlyData.has(monthKey)) {
+        monthlyData.set(monthKey, {
+          date: new Date(item.createdAt),
+          activeCollaborators: 0,
+          turnoverRate: 0,
+          satisfactionRate: 0
+        });
+      }
+      monthlyData.get(monthKey)!.turnoverRate = item.value;
+    });
+
+    // Procesar métricas de satisfacción
+    satisfactionMetrics.forEach(item => {
+      const monthKey = item.createdAt.toISOString().slice(0, 7);
+      if (!monthlyData.has(monthKey)) {
+        monthlyData.set(monthKey, {
+          date: new Date(item.createdAt),
+          activeCollaborators: 0,
+          turnoverRate: 0,
+          satisfactionRate: 0
+        });
+      }
+      monthlyData.get(monthKey)!.satisfactionRate = item.value;
     });
 
     return Array.from(monthlyData.values())

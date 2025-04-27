@@ -2,6 +2,7 @@ import { google } from 'googleapis';
 import { authenticate } from '@google-cloud/local-auth';
 import { GoogleSheetsPort } from '../../domain/ports/google-sheets.port';
 import { Injectable, Logger } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
 import * as path from 'path';
 
 @Injectable()
@@ -9,7 +10,7 @@ export class GoogleSheetsAdapter implements GoogleSheetsPort {
   private sheets: any;
   private readonly logger = new Logger(GoogleSheetsAdapter.name);
 
-  constructor() {
+  constructor(private readonly prisma: PrismaService) {
     this.sheets = google.sheets('v4');
   }
 
@@ -38,6 +39,52 @@ export class GoogleSheetsAdapter implements GoogleSheetsPort {
     } catch (error) {
       this.logger.error('Error al leer la hoja de cálculo:', error);
       throw new Error('Error al leer la hoja de cálculo');
+    }
+  }
+
+  async syncCollaborators(tenantId: string, spreadsheetId: string, data: any[][]): Promise<void> {
+    try {
+      // Actualizar o crear colaboradores
+      for (const row of data) {
+        const [name, role] = row;
+        await this.prisma.collaborator.upsert({
+          where: {
+            tenantId_name: {
+              tenantId,
+              name
+            }
+          },
+          create: {
+            name,
+            role,
+            isActive: true,
+            tenantId
+          },
+          update: {
+            role,
+            isActive: true
+          }
+        });
+      }
+
+      // Actualizar la configuración de la hoja
+      await this.prisma.sheetConfig.upsert({
+        where: {
+          tenantId
+        },
+        create: {
+          tenantId,
+          spreadsheetId,
+          lastSyncDate: new Date()
+        },
+        update: {
+          spreadsheetId,
+          lastSyncDate: new Date()
+        }
+      });
+    } catch (error) {
+      this.logger.error('Error al sincronizar colaboradores:', error);
+      throw new Error('Error al sincronizar colaboradores');
     }
   }
 } 
