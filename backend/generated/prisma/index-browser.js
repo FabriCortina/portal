@@ -119,10 +119,15 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.CollaboratorScalarFieldEnum = {
   id: 'id',
+  tenantId: 'tenantId',
+  clientId: 'clientId',
   name: 'name',
   role: 'role',
+  dni: 'dni',
+  cuit: 'cuit',
+  sooftEmail: 'sooftEmail',
+  personalEmail: 'personalEmail',
   isActive: 'isActive',
-  tenantId: 'tenantId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -131,6 +136,9 @@ exports.Prisma.SheetConfigScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
   spreadsheetId: 'spreadsheetId',
+  sheetName: 'sheetName',
+  range: 'range',
+  updateFrequency: 'updateFrequency',
   lastSyncDate: 'lastSyncDate',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -140,8 +148,7 @@ exports.Prisma.MetricScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
   clientId: 'clientId',
-  value: 'value',
-  type: 'type',
+  marketMetrics: 'marketMetrics',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -149,6 +156,10 @@ exports.Prisma.MetricScalarFieldEnum = {
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -159,6 +170,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 
 

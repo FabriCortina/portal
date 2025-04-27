@@ -1063,30 +1063,45 @@ export namespace Prisma {
 
   export type CollaboratorMinAggregateOutputType = {
     id: string | null
+    tenantId: string | null
+    clientId: string | null
     name: string | null
     role: string | null
+    dni: string | null
+    cuit: string | null
+    sooftEmail: string | null
+    personalEmail: string | null
     isActive: boolean | null
-    tenantId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
   export type CollaboratorMaxAggregateOutputType = {
     id: string | null
+    tenantId: string | null
+    clientId: string | null
     name: string | null
     role: string | null
+    dni: string | null
+    cuit: string | null
+    sooftEmail: string | null
+    personalEmail: string | null
     isActive: boolean | null
-    tenantId: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
 
   export type CollaboratorCountAggregateOutputType = {
     id: number
+    tenantId: number
+    clientId: number
     name: number
     role: number
+    dni: number
+    cuit: number
+    sooftEmail: number
+    personalEmail: number
     isActive: number
-    tenantId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1095,30 +1110,45 @@ export namespace Prisma {
 
   export type CollaboratorMinAggregateInputType = {
     id?: true
+    tenantId?: true
+    clientId?: true
     name?: true
     role?: true
+    dni?: true
+    cuit?: true
+    sooftEmail?: true
+    personalEmail?: true
     isActive?: true
-    tenantId?: true
     createdAt?: true
     updatedAt?: true
   }
 
   export type CollaboratorMaxAggregateInputType = {
     id?: true
+    tenantId?: true
+    clientId?: true
     name?: true
     role?: true
+    dni?: true
+    cuit?: true
+    sooftEmail?: true
+    personalEmail?: true
     isActive?: true
-    tenantId?: true
     createdAt?: true
     updatedAt?: true
   }
 
   export type CollaboratorCountAggregateInputType = {
     id?: true
+    tenantId?: true
+    clientId?: true
     name?: true
     role?: true
+    dni?: true
+    cuit?: true
+    sooftEmail?: true
+    personalEmail?: true
     isActive?: true
-    tenantId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1198,10 +1228,15 @@ export namespace Prisma {
 
   export type CollaboratorGroupByOutputType = {
     id: string
+    tenantId: string
+    clientId: string | null
     name: string
     role: string
+    dni: string
+    cuit: string
+    sooftEmail: string | null
+    personalEmail: string | null
     isActive: boolean
-    tenantId: string
     createdAt: Date
     updatedAt: Date
     _count: CollaboratorCountAggregateOutputType | null
@@ -1225,55 +1260,80 @@ export namespace Prisma {
 
   export type CollaboratorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    tenantId?: boolean
+    clientId?: boolean
     name?: boolean
     role?: boolean
+    dni?: boolean
+    cuit?: boolean
+    sooftEmail?: boolean
+    personalEmail?: boolean
     isActive?: boolean
-    tenantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["collaborator"]>
 
   export type CollaboratorSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    tenantId?: boolean
+    clientId?: boolean
     name?: boolean
     role?: boolean
+    dni?: boolean
+    cuit?: boolean
+    sooftEmail?: boolean
+    personalEmail?: boolean
     isActive?: boolean
-    tenantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["collaborator"]>
 
   export type CollaboratorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    tenantId?: boolean
+    clientId?: boolean
     name?: boolean
     role?: boolean
+    dni?: boolean
+    cuit?: boolean
+    sooftEmail?: boolean
+    personalEmail?: boolean
     isActive?: boolean
-    tenantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["collaborator"]>
 
   export type CollaboratorSelectScalar = {
     id?: boolean
+    tenantId?: boolean
+    clientId?: boolean
     name?: boolean
     role?: boolean
+    dni?: boolean
+    cuit?: boolean
+    sooftEmail?: boolean
+    personalEmail?: boolean
     isActive?: boolean
-    tenantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CollaboratorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "role" | "isActive" | "tenantId" | "createdAt" | "updatedAt", ExtArgs["result"]["collaborator"]>
+  export type CollaboratorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "clientId" | "name" | "role" | "dni" | "cuit" | "sooftEmail" | "personalEmail" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["collaborator"]>
 
   export type $CollaboratorPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Collaborator"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      tenantId: string
+      clientId: string | null
       name: string
       role: string
+      dni: string
+      cuit: string
+      sooftEmail: string | null
+      personalEmail: string | null
       isActive: boolean
-      tenantId: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["collaborator"]>
@@ -1700,10 +1760,15 @@ export namespace Prisma {
    */
   interface CollaboratorFieldRefs {
     readonly id: FieldRef<"Collaborator", 'String'>
+    readonly tenantId: FieldRef<"Collaborator", 'String'>
+    readonly clientId: FieldRef<"Collaborator", 'String'>
     readonly name: FieldRef<"Collaborator", 'String'>
     readonly role: FieldRef<"Collaborator", 'String'>
+    readonly dni: FieldRef<"Collaborator", 'String'>
+    readonly cuit: FieldRef<"Collaborator", 'String'>
+    readonly sooftEmail: FieldRef<"Collaborator", 'String'>
+    readonly personalEmail: FieldRef<"Collaborator", 'String'>
     readonly isActive: FieldRef<"Collaborator", 'Boolean'>
-    readonly tenantId: FieldRef<"Collaborator", 'String'>
     readonly createdAt: FieldRef<"Collaborator", 'DateTime'>
     readonly updatedAt: FieldRef<"Collaborator", 'DateTime'>
   }
@@ -2086,6 +2151,9 @@ export namespace Prisma {
     id: string | null
     tenantId: string | null
     spreadsheetId: string | null
+    sheetName: string | null
+    range: string | null
+    updateFrequency: string | null
     lastSyncDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2095,6 +2163,9 @@ export namespace Prisma {
     id: string | null
     tenantId: string | null
     spreadsheetId: string | null
+    sheetName: string | null
+    range: string | null
+    updateFrequency: string | null
     lastSyncDate: Date | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2104,6 +2175,9 @@ export namespace Prisma {
     id: number
     tenantId: number
     spreadsheetId: number
+    sheetName: number
+    range: number
+    updateFrequency: number
     lastSyncDate: number
     createdAt: number
     updatedAt: number
@@ -2115,6 +2189,9 @@ export namespace Prisma {
     id?: true
     tenantId?: true
     spreadsheetId?: true
+    sheetName?: true
+    range?: true
+    updateFrequency?: true
     lastSyncDate?: true
     createdAt?: true
     updatedAt?: true
@@ -2124,6 +2201,9 @@ export namespace Prisma {
     id?: true
     tenantId?: true
     spreadsheetId?: true
+    sheetName?: true
+    range?: true
+    updateFrequency?: true
     lastSyncDate?: true
     createdAt?: true
     updatedAt?: true
@@ -2133,6 +2213,9 @@ export namespace Prisma {
     id?: true
     tenantId?: true
     spreadsheetId?: true
+    sheetName?: true
+    range?: true
+    updateFrequency?: true
     lastSyncDate?: true
     createdAt?: true
     updatedAt?: true
@@ -2215,6 +2298,9 @@ export namespace Prisma {
     id: string
     tenantId: string
     spreadsheetId: string
+    sheetName: string
+    range: string
+    updateFrequency: string
     lastSyncDate: Date | null
     createdAt: Date
     updatedAt: Date
@@ -2241,6 +2327,9 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     spreadsheetId?: boolean
+    sheetName?: boolean
+    range?: boolean
+    updateFrequency?: boolean
     lastSyncDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2250,6 +2339,9 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     spreadsheetId?: boolean
+    sheetName?: boolean
+    range?: boolean
+    updateFrequency?: boolean
     lastSyncDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2259,6 +2351,9 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     spreadsheetId?: boolean
+    sheetName?: boolean
+    range?: boolean
+    updateFrequency?: boolean
     lastSyncDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2268,12 +2363,15 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     spreadsheetId?: boolean
+    sheetName?: boolean
+    range?: boolean
+    updateFrequency?: boolean
     lastSyncDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type SheetConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "spreadsheetId" | "lastSyncDate" | "createdAt" | "updatedAt", ExtArgs["result"]["sheetConfig"]>
+  export type SheetConfigOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "spreadsheetId" | "sheetName" | "range" | "updateFrequency" | "lastSyncDate" | "createdAt" | "updatedAt", ExtArgs["result"]["sheetConfig"]>
 
   export type $SheetConfigPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "SheetConfig"
@@ -2282,6 +2380,9 @@ export namespace Prisma {
       id: string
       tenantId: string
       spreadsheetId: string
+      sheetName: string
+      range: string
+      updateFrequency: string
       lastSyncDate: Date | null
       createdAt: Date
       updatedAt: Date
@@ -2711,6 +2812,9 @@ export namespace Prisma {
     readonly id: FieldRef<"SheetConfig", 'String'>
     readonly tenantId: FieldRef<"SheetConfig", 'String'>
     readonly spreadsheetId: FieldRef<"SheetConfig", 'String'>
+    readonly sheetName: FieldRef<"SheetConfig", 'String'>
+    readonly range: FieldRef<"SheetConfig", 'String'>
+    readonly updateFrequency: FieldRef<"SheetConfig", 'String'>
     readonly lastSyncDate: FieldRef<"SheetConfig", 'DateTime'>
     readonly createdAt: FieldRef<"SheetConfig", 'DateTime'>
     readonly updatedAt: FieldRef<"SheetConfig", 'DateTime'>
@@ -3086,26 +3190,14 @@ export namespace Prisma {
 
   export type AggregateMetric = {
     _count: MetricCountAggregateOutputType | null
-    _avg: MetricAvgAggregateOutputType | null
-    _sum: MetricSumAggregateOutputType | null
     _min: MetricMinAggregateOutputType | null
     _max: MetricMaxAggregateOutputType | null
-  }
-
-  export type MetricAvgAggregateOutputType = {
-    value: number | null
-  }
-
-  export type MetricSumAggregateOutputType = {
-    value: number | null
   }
 
   export type MetricMinAggregateOutputType = {
     id: string | null
     tenantId: string | null
     clientId: string | null
-    value: number | null
-    type: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3114,8 +3206,6 @@ export namespace Prisma {
     id: string | null
     tenantId: string | null
     clientId: string | null
-    value: number | null
-    type: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3124,28 +3214,17 @@ export namespace Prisma {
     id: number
     tenantId: number
     clientId: number
-    value: number
-    type: number
+    marketMetrics: number
     createdAt: number
     updatedAt: number
     _all: number
   }
 
 
-  export type MetricAvgAggregateInputType = {
-    value?: true
-  }
-
-  export type MetricSumAggregateInputType = {
-    value?: true
-  }
-
   export type MetricMinAggregateInputType = {
     id?: true
     tenantId?: true
     clientId?: true
-    value?: true
-    type?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3154,8 +3233,6 @@ export namespace Prisma {
     id?: true
     tenantId?: true
     clientId?: true
-    value?: true
-    type?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3164,8 +3241,7 @@ export namespace Prisma {
     id?: true
     tenantId?: true
     clientId?: true
-    value?: true
-    type?: true
+    marketMetrics?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3209,18 +3285,6 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Select which fields to average
-    **/
-    _avg?: MetricAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: MetricSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
      * Select which fields to find the minimum value
     **/
     _min?: MetricMinAggregateInputType
@@ -3251,8 +3315,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: MetricCountAggregateInputType | true
-    _avg?: MetricAvgAggregateInputType
-    _sum?: MetricSumAggregateInputType
     _min?: MetricMinAggregateInputType
     _max?: MetricMaxAggregateInputType
   }
@@ -3261,13 +3323,10 @@ export namespace Prisma {
     id: string
     tenantId: string
     clientId: string
-    value: number
-    type: string
+    marketMetrics: JsonValue
     createdAt: Date
     updatedAt: Date
     _count: MetricCountAggregateOutputType | null
-    _avg: MetricAvgAggregateOutputType | null
-    _sum: MetricSumAggregateOutputType | null
     _min: MetricMinAggregateOutputType | null
     _max: MetricMaxAggregateOutputType | null
   }
@@ -3290,8 +3349,7 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     clientId?: boolean
-    value?: boolean
-    type?: boolean
+    marketMetrics?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["metric"]>
@@ -3300,8 +3358,7 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     clientId?: boolean
-    value?: boolean
-    type?: boolean
+    marketMetrics?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["metric"]>
@@ -3310,8 +3367,7 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     clientId?: boolean
-    value?: boolean
-    type?: boolean
+    marketMetrics?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["metric"]>
@@ -3320,13 +3376,12 @@ export namespace Prisma {
     id?: boolean
     tenantId?: boolean
     clientId?: boolean
-    value?: boolean
-    type?: boolean
+    marketMetrics?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type MetricOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "clientId" | "value" | "type" | "createdAt" | "updatedAt", ExtArgs["result"]["metric"]>
+  export type MetricOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tenantId" | "clientId" | "marketMetrics" | "createdAt" | "updatedAt", ExtArgs["result"]["metric"]>
 
   export type $MetricPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Metric"
@@ -3335,8 +3390,7 @@ export namespace Prisma {
       id: string
       tenantId: string
       clientId: string
-      value: number
-      type: string
+      marketMetrics: Prisma.JsonValue
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["metric"]>
@@ -3765,8 +3819,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Metric", 'String'>
     readonly tenantId: FieldRef<"Metric", 'String'>
     readonly clientId: FieldRef<"Metric", 'String'>
-    readonly value: FieldRef<"Metric", 'Float'>
-    readonly type: FieldRef<"Metric", 'String'>
+    readonly marketMetrics: FieldRef<"Metric", 'Json'>
     readonly createdAt: FieldRef<"Metric", 'DateTime'>
     readonly updatedAt: FieldRef<"Metric", 'DateTime'>
   }
@@ -4151,10 +4204,15 @@ export namespace Prisma {
 
   export const CollaboratorScalarFieldEnum: {
     id: 'id',
+    tenantId: 'tenantId',
+    clientId: 'clientId',
     name: 'name',
     role: 'role',
+    dni: 'dni',
+    cuit: 'cuit',
+    sooftEmail: 'sooftEmail',
+    personalEmail: 'personalEmail',
     isActive: 'isActive',
-    tenantId: 'tenantId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4166,6 +4224,9 @@ export namespace Prisma {
     id: 'id',
     tenantId: 'tenantId',
     spreadsheetId: 'spreadsheetId',
+    sheetName: 'sheetName',
+    range: 'range',
+    updateFrequency: 'updateFrequency',
     lastSyncDate: 'lastSyncDate',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -4178,8 +4239,7 @@ export namespace Prisma {
     id: 'id',
     tenantId: 'tenantId',
     clientId: 'clientId',
-    value: 'value',
-    type: 'type',
+    marketMetrics: 'marketMetrics',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -4193,6 +4253,13 @@ export namespace Prisma {
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -4209,6 +4276,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -4252,16 +4328,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
+   * Reference to a field of type 'Json'
    */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
 
 
   /**
-   * Reference to a field of type 'Float[]'
+   * Reference to a field of type 'QueryMode'
    */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -4287,20 +4363,30 @@ export namespace Prisma {
     OR?: CollaboratorWhereInput[]
     NOT?: CollaboratorWhereInput | CollaboratorWhereInput[]
     id?: StringFilter<"Collaborator"> | string
+    tenantId?: StringFilter<"Collaborator"> | string
+    clientId?: StringNullableFilter<"Collaborator"> | string | null
     name?: StringFilter<"Collaborator"> | string
     role?: StringFilter<"Collaborator"> | string
+    dni?: StringFilter<"Collaborator"> | string
+    cuit?: StringFilter<"Collaborator"> | string
+    sooftEmail?: StringNullableFilter<"Collaborator"> | string | null
+    personalEmail?: StringNullableFilter<"Collaborator"> | string | null
     isActive?: BoolFilter<"Collaborator"> | boolean
-    tenantId?: StringFilter<"Collaborator"> | string
     createdAt?: DateTimeFilter<"Collaborator"> | Date | string
     updatedAt?: DateTimeFilter<"Collaborator"> | Date | string
   }
 
   export type CollaboratorOrderByWithRelationInput = {
     id?: SortOrder
+    tenantId?: SortOrder
+    clientId?: SortOrderInput | SortOrder
     name?: SortOrder
     role?: SortOrder
+    dni?: SortOrder
+    cuit?: SortOrder
+    sooftEmail?: SortOrderInput | SortOrder
+    personalEmail?: SortOrderInput | SortOrder
     isActive?: SortOrder
-    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -4310,20 +4396,30 @@ export namespace Prisma {
     AND?: CollaboratorWhereInput | CollaboratorWhereInput[]
     OR?: CollaboratorWhereInput[]
     NOT?: CollaboratorWhereInput | CollaboratorWhereInput[]
+    tenantId?: StringFilter<"Collaborator"> | string
+    clientId?: StringNullableFilter<"Collaborator"> | string | null
     name?: StringFilter<"Collaborator"> | string
     role?: StringFilter<"Collaborator"> | string
+    dni?: StringFilter<"Collaborator"> | string
+    cuit?: StringFilter<"Collaborator"> | string
+    sooftEmail?: StringNullableFilter<"Collaborator"> | string | null
+    personalEmail?: StringNullableFilter<"Collaborator"> | string | null
     isActive?: BoolFilter<"Collaborator"> | boolean
-    tenantId?: StringFilter<"Collaborator"> | string
     createdAt?: DateTimeFilter<"Collaborator"> | Date | string
     updatedAt?: DateTimeFilter<"Collaborator"> | Date | string
   }, "id">
 
   export type CollaboratorOrderByWithAggregationInput = {
     id?: SortOrder
+    tenantId?: SortOrder
+    clientId?: SortOrderInput | SortOrder
     name?: SortOrder
     role?: SortOrder
+    dni?: SortOrder
+    cuit?: SortOrder
+    sooftEmail?: SortOrderInput | SortOrder
+    personalEmail?: SortOrderInput | SortOrder
     isActive?: SortOrder
-    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CollaboratorCountOrderByAggregateInput
@@ -4336,10 +4432,15 @@ export namespace Prisma {
     OR?: CollaboratorScalarWhereWithAggregatesInput[]
     NOT?: CollaboratorScalarWhereWithAggregatesInput | CollaboratorScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Collaborator"> | string
+    tenantId?: StringWithAggregatesFilter<"Collaborator"> | string
+    clientId?: StringNullableWithAggregatesFilter<"Collaborator"> | string | null
     name?: StringWithAggregatesFilter<"Collaborator"> | string
     role?: StringWithAggregatesFilter<"Collaborator"> | string
+    dni?: StringWithAggregatesFilter<"Collaborator"> | string
+    cuit?: StringWithAggregatesFilter<"Collaborator"> | string
+    sooftEmail?: StringNullableWithAggregatesFilter<"Collaborator"> | string | null
+    personalEmail?: StringNullableWithAggregatesFilter<"Collaborator"> | string | null
     isActive?: BoolWithAggregatesFilter<"Collaborator"> | boolean
-    tenantId?: StringWithAggregatesFilter<"Collaborator"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Collaborator"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Collaborator"> | Date | string
   }
@@ -4351,6 +4452,9 @@ export namespace Prisma {
     id?: StringFilter<"SheetConfig"> | string
     tenantId?: StringFilter<"SheetConfig"> | string
     spreadsheetId?: StringFilter<"SheetConfig"> | string
+    sheetName?: StringFilter<"SheetConfig"> | string
+    range?: StringFilter<"SheetConfig"> | string
+    updateFrequency?: StringFilter<"SheetConfig"> | string
     lastSyncDate?: DateTimeNullableFilter<"SheetConfig"> | Date | string | null
     createdAt?: DateTimeFilter<"SheetConfig"> | Date | string
     updatedAt?: DateTimeFilter<"SheetConfig"> | Date | string
@@ -4360,6 +4464,9 @@ export namespace Prisma {
     id?: SortOrder
     tenantId?: SortOrder
     spreadsheetId?: SortOrder
+    sheetName?: SortOrder
+    range?: SortOrder
+    updateFrequency?: SortOrder
     lastSyncDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -4372,6 +4479,9 @@ export namespace Prisma {
     NOT?: SheetConfigWhereInput | SheetConfigWhereInput[]
     tenantId?: StringFilter<"SheetConfig"> | string
     spreadsheetId?: StringFilter<"SheetConfig"> | string
+    sheetName?: StringFilter<"SheetConfig"> | string
+    range?: StringFilter<"SheetConfig"> | string
+    updateFrequency?: StringFilter<"SheetConfig"> | string
     lastSyncDate?: DateTimeNullableFilter<"SheetConfig"> | Date | string | null
     createdAt?: DateTimeFilter<"SheetConfig"> | Date | string
     updatedAt?: DateTimeFilter<"SheetConfig"> | Date | string
@@ -4381,6 +4491,9 @@ export namespace Prisma {
     id?: SortOrder
     tenantId?: SortOrder
     spreadsheetId?: SortOrder
+    sheetName?: SortOrder
+    range?: SortOrder
+    updateFrequency?: SortOrder
     lastSyncDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -4396,6 +4509,9 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"SheetConfig"> | string
     tenantId?: StringWithAggregatesFilter<"SheetConfig"> | string
     spreadsheetId?: StringWithAggregatesFilter<"SheetConfig"> | string
+    sheetName?: StringWithAggregatesFilter<"SheetConfig"> | string
+    range?: StringWithAggregatesFilter<"SheetConfig"> | string
+    updateFrequency?: StringWithAggregatesFilter<"SheetConfig"> | string
     lastSyncDate?: DateTimeNullableWithAggregatesFilter<"SheetConfig"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"SheetConfig"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"SheetConfig"> | Date | string
@@ -4408,8 +4524,7 @@ export namespace Prisma {
     id?: StringFilter<"Metric"> | string
     tenantId?: StringFilter<"Metric"> | string
     clientId?: StringFilter<"Metric"> | string
-    value?: FloatFilter<"Metric"> | number
-    type?: StringFilter<"Metric"> | string
+    marketMetrics?: JsonFilter<"Metric">
     createdAt?: DateTimeFilter<"Metric"> | Date | string
     updatedAt?: DateTimeFilter<"Metric"> | Date | string
   }
@@ -4418,8 +4533,7 @@ export namespace Prisma {
     id?: SortOrder
     tenantId?: SortOrder
     clientId?: SortOrder
-    value?: SortOrder
-    type?: SortOrder
+    marketMetrics?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -4431,8 +4545,7 @@ export namespace Prisma {
     NOT?: MetricWhereInput | MetricWhereInput[]
     tenantId?: StringFilter<"Metric"> | string
     clientId?: StringFilter<"Metric"> | string
-    value?: FloatFilter<"Metric"> | number
-    type?: StringFilter<"Metric"> | string
+    marketMetrics?: JsonFilter<"Metric">
     createdAt?: DateTimeFilter<"Metric"> | Date | string
     updatedAt?: DateTimeFilter<"Metric"> | Date | string
   }, "id">
@@ -4441,15 +4554,12 @@ export namespace Prisma {
     id?: SortOrder
     tenantId?: SortOrder
     clientId?: SortOrder
-    value?: SortOrder
-    type?: SortOrder
+    marketMetrics?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: MetricCountOrderByAggregateInput
-    _avg?: MetricAvgOrderByAggregateInput
     _max?: MetricMaxOrderByAggregateInput
     _min?: MetricMinOrderByAggregateInput
-    _sum?: MetricSumOrderByAggregateInput
   }
 
   export type MetricScalarWhereWithAggregatesInput = {
@@ -4459,78 +4569,112 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Metric"> | string
     tenantId?: StringWithAggregatesFilter<"Metric"> | string
     clientId?: StringWithAggregatesFilter<"Metric"> | string
-    value?: FloatWithAggregatesFilter<"Metric"> | number
-    type?: StringWithAggregatesFilter<"Metric"> | string
+    marketMetrics?: JsonWithAggregatesFilter<"Metric">
     createdAt?: DateTimeWithAggregatesFilter<"Metric"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Metric"> | Date | string
   }
 
   export type CollaboratorCreateInput = {
     id?: string
+    tenantId: string
+    clientId?: string | null
     name: string
     role: string
+    dni: string
+    cuit: string
+    sooftEmail?: string | null
+    personalEmail?: string | null
     isActive?: boolean
-    tenantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type CollaboratorUncheckedCreateInput = {
     id?: string
+    tenantId: string
+    clientId?: string | null
     name: string
     role: string
+    dni: string
+    cuit: string
+    sooftEmail?: string | null
+    personalEmail?: string | null
     isActive?: boolean
-    tenantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type CollaboratorUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    cuit?: StringFieldUpdateOperationsInput | string
+    sooftEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CollaboratorUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    cuit?: StringFieldUpdateOperationsInput | string
+    sooftEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CollaboratorCreateManyInput = {
     id?: string
+    tenantId: string
+    clientId?: string | null
     name: string
     role: string
+    dni: string
+    cuit: string
+    sooftEmail?: string | null
+    personalEmail?: string | null
     isActive?: boolean
-    tenantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type CollaboratorUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    cuit?: StringFieldUpdateOperationsInput | string
+    sooftEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CollaboratorUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    tenantId?: StringFieldUpdateOperationsInput | string
+    clientId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     role?: StringFieldUpdateOperationsInput | string
+    dni?: StringFieldUpdateOperationsInput | string
+    cuit?: StringFieldUpdateOperationsInput | string
+    sooftEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    personalEmail?: NullableStringFieldUpdateOperationsInput | string | null
     isActive?: BoolFieldUpdateOperationsInput | boolean
-    tenantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4539,6 +4683,9 @@ export namespace Prisma {
     id?: string
     tenantId: string
     spreadsheetId: string
+    sheetName: string
+    range: string
+    updateFrequency: string
     lastSyncDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -4548,6 +4695,9 @@ export namespace Prisma {
     id?: string
     tenantId: string
     spreadsheetId: string
+    sheetName: string
+    range: string
+    updateFrequency: string
     lastSyncDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -4557,6 +4707,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     spreadsheetId?: StringFieldUpdateOperationsInput | string
+    sheetName?: StringFieldUpdateOperationsInput | string
+    range?: StringFieldUpdateOperationsInput | string
+    updateFrequency?: StringFieldUpdateOperationsInput | string
     lastSyncDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4566,6 +4719,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     spreadsheetId?: StringFieldUpdateOperationsInput | string
+    sheetName?: StringFieldUpdateOperationsInput | string
+    range?: StringFieldUpdateOperationsInput | string
+    updateFrequency?: StringFieldUpdateOperationsInput | string
     lastSyncDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4575,6 +4731,9 @@ export namespace Prisma {
     id?: string
     tenantId: string
     spreadsheetId: string
+    sheetName: string
+    range: string
+    updateFrequency: string
     lastSyncDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -4584,6 +4743,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     spreadsheetId?: StringFieldUpdateOperationsInput | string
+    sheetName?: StringFieldUpdateOperationsInput | string
+    range?: StringFieldUpdateOperationsInput | string
+    updateFrequency?: StringFieldUpdateOperationsInput | string
     lastSyncDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4593,6 +4755,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     spreadsheetId?: StringFieldUpdateOperationsInput | string
+    sheetName?: StringFieldUpdateOperationsInput | string
+    range?: StringFieldUpdateOperationsInput | string
+    updateFrequency?: StringFieldUpdateOperationsInput | string
     lastSyncDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -4602,8 +4767,7 @@ export namespace Prisma {
     id?: string
     tenantId: string
     clientId: string
-    value: number
-    type: string
+    marketMetrics: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4612,8 +4776,7 @@ export namespace Prisma {
     id?: string
     tenantId: string
     clientId: string
-    value: number
-    type: string
+    marketMetrics: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4622,8 +4785,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
-    value?: FloatFieldUpdateOperationsInput | number
-    type?: StringFieldUpdateOperationsInput | string
+    marketMetrics?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4632,8 +4794,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
-    value?: FloatFieldUpdateOperationsInput | number
-    type?: StringFieldUpdateOperationsInput | string
+    marketMetrics?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4642,8 +4803,7 @@ export namespace Prisma {
     id?: string
     tenantId: string
     clientId: string
-    value: number
-    type: string
+    marketMetrics: JsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -4652,8 +4812,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
-    value?: FloatFieldUpdateOperationsInput | number
-    type?: StringFieldUpdateOperationsInput | string
+    marketMetrics?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4662,8 +4821,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     tenantId?: StringFieldUpdateOperationsInput | string
     clientId?: StringFieldUpdateOperationsInput | string
-    value?: FloatFieldUpdateOperationsInput | number
-    type?: StringFieldUpdateOperationsInput | string
+    marketMetrics?: JsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -4683,6 +4841,21 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -4699,32 +4872,52 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type CollaboratorCountOrderByAggregateInput = {
     id?: SortOrder
+    tenantId?: SortOrder
+    clientId?: SortOrder
     name?: SortOrder
     role?: SortOrder
+    dni?: SortOrder
+    cuit?: SortOrder
+    sooftEmail?: SortOrder
+    personalEmail?: SortOrder
     isActive?: SortOrder
-    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type CollaboratorMaxOrderByAggregateInput = {
     id?: SortOrder
+    tenantId?: SortOrder
+    clientId?: SortOrder
     name?: SortOrder
     role?: SortOrder
+    dni?: SortOrder
+    cuit?: SortOrder
+    sooftEmail?: SortOrder
+    personalEmail?: SortOrder
     isActive?: SortOrder
-    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type CollaboratorMinOrderByAggregateInput = {
     id?: SortOrder
+    tenantId?: SortOrder
+    clientId?: SortOrder
     name?: SortOrder
     role?: SortOrder
+    dni?: SortOrder
+    cuit?: SortOrder
+    sooftEmail?: SortOrder
+    personalEmail?: SortOrder
     isActive?: SortOrder
-    tenantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -4745,6 +4938,24 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -4780,15 +4991,13 @@ export namespace Prisma {
     not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
-  }
-
   export type SheetConfigCountOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
     spreadsheetId?: SortOrder
+    sheetName?: SortOrder
+    range?: SortOrder
+    updateFrequency?: SortOrder
     lastSyncDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -4798,6 +5007,9 @@ export namespace Prisma {
     id?: SortOrder
     tenantId?: SortOrder
     spreadsheetId?: SortOrder
+    sheetName?: SortOrder
+    range?: SortOrder
+    updateFrequency?: SortOrder
     lastSyncDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -4807,6 +5019,9 @@ export namespace Prisma {
     id?: SortOrder
     tenantId?: SortOrder
     spreadsheetId?: SortOrder
+    sheetName?: SortOrder
+    range?: SortOrder
+    updateFrequency?: SortOrder
     lastSyncDate?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -4825,38 +5040,43 @@ export namespace Prisma {
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
 
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type MetricCountOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
     clientId?: SortOrder
-    value?: SortOrder
-    type?: SortOrder
+    marketMetrics?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type MetricAvgOrderByAggregateInput = {
-    value?: SortOrder
   }
 
   export type MetricMaxOrderByAggregateInput = {
     id?: SortOrder
     tenantId?: SortOrder
     clientId?: SortOrder
-    value?: SortOrder
-    type?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -4865,34 +5085,42 @@ export namespace Prisma {
     id?: SortOrder
     tenantId?: SortOrder
     clientId?: SortOrder
-    value?: SortOrder
-    type?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type MetricSumOrderByAggregateInput = {
-    value?: SortOrder
-  }
-
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
   }
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -4907,14 +5135,6 @@ export namespace Prisma {
     set?: Date | string | null
   }
 
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -4927,6 +5147,20 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type NestedBoolFilter<$PrismaModel = never> = {
@@ -4971,6 +5205,34 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -5019,43 +5281,28 @@ export namespace Prisma {
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
 
