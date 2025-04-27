@@ -19,33 +19,33 @@ class AuthService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: API_URL,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
 
     this.setupInterceptors();
   }
 
   private setupInterceptors(): void {
-    // Interceptor para agregar el token a las peticiones
+// Interceptor para agregar el token a las peticiones
     this.api.interceptors.request.use(
-      (config) => {
+  (config) => {
         const token = this.getAccessToken();
-        if (token) {
-          config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-    // Interceptor para manejar errores de autenticación
+// Interceptor para manejar errores de autenticación
     this.api.interceptors.response.use(
-      (response) => response,
+  (response) => response,
       async (error: AxiosError) => {
         const originalRequest = error.config as CustomAxiosRequestConfig;
         
@@ -53,19 +53,19 @@ class AuthService {
           return Promise.reject(error);
         }
 
-        // Si el error es 401 y no es una petición de refresh
+    // Si el error es 401 y no es una petición de refresh
         if (
           error.response.status === 401 &&
           !originalRequest._retry &&
           originalRequest.url !== '/auth/refresh'
         ) {
-          originalRequest._retry = true;
+      originalRequest._retry = true;
 
-          try {
+      try {
             // Reutilizar la promesa si ya hay un refresh en curso
             if (!this.refreshPromise) {
               this.refreshPromise = this.refreshToken();
-            }
+        }
 
             const authResponse = await this.refreshPromise;
             
@@ -77,16 +77,16 @@ class AuthService {
             
             // Reintentar la petición original
             return this.api(originalRequest);
-          } catch (refreshError) {
+      } catch (refreshError) {
             this.refreshPromise = null;
             this.logout();
-            return Promise.reject(refreshError);
-          }
-        }
-
-        return Promise.reject(error);
+        return Promise.reject(refreshError);
       }
-    );
+    }
+
+    return Promise.reject(error);
+  }
+);
   }
 
   private getAccessToken(): string | null {
@@ -143,9 +143,9 @@ class AuthService {
 
       const { accessToken, refreshToken: newRefreshToken, user } = response.data;
       this.setTokens(accessToken, newRefreshToken);
-      localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', JSON.stringify(user));
 
-      return response.data;
+    return response.data;
     } catch (error) {
       this.logout();
       throw error;

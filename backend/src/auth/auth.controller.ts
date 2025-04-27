@@ -1,9 +1,7 @@
 import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from '@/auth/auth.service';
-import { LoginDto } from '@/auth/dto/login.dto';
-import { RegisterDto } from './dto/auth.dto';
-import { RefreshTokenDto } from '@/auth/dto/refresh-token.dto';
+import { LoginDto, RegisterDto, RefreshTokenDto } from '@/auth/dto/auth.dto';
 import { RegisterOperationsDto } from './dto/register-operations.dto';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '@/common/guards/roles.guard';
@@ -30,7 +28,7 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @Post('refresh-token')
+  @Post('refresh')
   @UseGuards(RefreshTokenGuard)
   @ApiOperation({ summary: 'Renovar tokens' })
   @ApiResponse({
@@ -39,6 +37,7 @@ export class AuthController {
     type: TokensDto,
   })
   @ApiResponse({ status: 401, description: 'Token de actualización inválido' })
+  @ApiBearerAuth()
   async refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokensDto> {
     return this.authService.refreshTokens(refreshTokenDto);
   }

@@ -47,8 +47,8 @@ const App: React.FC = () => {
   return (
     <Router>
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <AuthProvider>
+      <CssBaseline />
+      <AuthProvider>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route
@@ -61,8 +61,8 @@ const App: React.FC = () => {
             />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
           </Routes>
-        </AuthProvider>
-      </ThemeProvider>
+      </AuthProvider>
+    </ThemeProvider>
     </Router>
   );
 };

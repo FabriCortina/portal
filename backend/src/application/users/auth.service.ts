@@ -1,26 +1,36 @@
-import { ConflictException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { PrismaService } from '@/prisma/prisma.service';
 import { RegisterOperationsDto } from './dto/register-operations.dto';
+import * as bcrypt from 'bcrypt';
 
-class AuthService {
+@Injectable()
+export class AuthService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
+
   async registerOperations(registerOperationsDto: RegisterOperationsDto) {
     const { email, password } = registerOperationsDto;
 
     // Verificar si el usuario ya existe
-    const existingUser = await this.userRepository.findOne({ where: { email } });
+    const existingUser = await this.prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       throw new ConflictException('El usuario ya existe');
     }
 
     // Crear nuevo usuario de operaciones
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = this.userRepository.create({
-      email,
-      password: hashedPassword,
-      role: 'operations'
+    const user = await this.prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        role: 'operations'
+      }
     });
-
-    await this.userRepository.save(user);
 
     return {
       message: 'Usuario de operaciones registrado exitosamente',
