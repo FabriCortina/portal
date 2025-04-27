@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -13,219 +14,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Tenant {
-  id            String         @id @default(uuid())
-  name          String         @unique
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  users         User[]
-  clients       Client[]
-  collaborators Collaborator[]
-  trackings     Tracking[]
-  queries       Query[]
-  metrics       Metric[]
-  sheetConfig   SheetConfig?
-}
-
-model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      String
-  tenantId  String
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  refreshTokens RefreshToken[]
-
-  @@index([tenantId])
-}
-
-model RefreshToken {
-  id        String   @id @default(uuid())
-  token     String   @unique
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([userId])
-}
-
-model Client {
-  id            String         @id @default(uuid())
-  email         String        
-  password      String
-  name          String        
-  tenantId      String
-  tenant        Tenant        @relation(fields: [tenantId], references: [id])
-  collaborators Collaborator[]
-  metrics       Metric[]
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-
-  @@unique([email, tenantId])
-  @@unique([name, tenantId])
-  @@index([tenantId])
-}
-
 model Collaborator {
-  id                      String     @id @default(uuid())
-  dni                     String    
-  cuit                    String    
-  name                    String
-  sede                    String
-  status                  String
-  firstContractDate       DateTime
-  secondContractDate      DateTime?
-  seniority               Int
-  alert                   String?
-  contractEndDate         DateTime?
-  terminationDate         DateTime?
-  terminationReason       String?
-  terminationDetails      String?
-  contractCondition       String
-  contractCompany         String
-  management              String
-  leader                  String
-  clientId               String
-  client                 Client     @relation(fields: [clientId], references: [id])
-  project                 String
-  position                String
-  sooftEmail              String    
-  personalEmail           String    
-  clientEmail             String
-  birthDate               DateTime
-  age                     Int
-  gender                  String
-  nationality             String
-  maritalStatus           String
-  reference               String?
-  addressStreet           String
-  addressNumber           String
-  addressFloor            String?
-  addressApartment        String?
-  postalCode              String
-  city                    String
-  province                String
-  phone                   String
-  spouseName              String?
-  spouseBirthDate         DateTime?
-  hasChildren             Boolean
-  child1Name              String?
-  child1BirthDate         DateTime?
-  child1Age               Int?
-  child2Name              String?
-  child2BirthDate         DateTime?
-  child2Age               Int?
-  child3Name              String?
-  child3BirthDate         DateTime?
-  child3Age               Int?
-  child4Name              String?
-  child4BirthDate         DateTime?
-  child4Age               Int?
-  child5Name              String?
-  child5BirthDate         DateTime?
-  child5Age               Int?
-  emergencyContactPhone   String
-  emergencyContactName    String
-  healthInsurance         String
-  dependents              Int
-  bank                    String
-  education               String
-  maxEducationLevel       String
-  bloodType               String
-  hobbies                 String?
-  tshirtSize              String
-  hasDisability           Boolean
-  declaredIllness         String?
-  hasFoodRestriction      Boolean
-  foodRestrictionDetails  String?
-  observations            String?
-  tenantId                String
-  tenant                  Tenant     @relation(fields: [tenantId], references: [id])
-  trackings               Tracking[]
-  queries                 Query[]
-  createdAt               DateTime   @default(now())
-  updatedAt               DateTime   @updatedAt
-
-  @@unique([dni, tenantId])
-  @@unique([cuit, tenantId])
-  @@unique([sooftEmail, tenantId])
-  @@unique([personalEmail, tenantId])
-  @@index([tenantId])
-  @@index([clientId])
-}
-
-model Tracking {
-  id                      String       @id @default(uuid())
-  date                    DateTime
-  collaboratorId          String
-  collaborator            Collaborator @relation(fields: [collaboratorId], references: [id])
-  sprintPercentage        Float
-  bugsCount               Int
-  feedback                String
-  last15DaysSatisfaction  Int
-  issuesToResolve         String
-  tenantId                String
-  tenant                  Tenant       @relation(fields: [tenantId], references: [id])
-  createdAt               DateTime     @default(now())
-  updatedAt               DateTime     @updatedAt
-
-  @@index([tenantId])
-  @@index([collaboratorId])
-}
-
-model Query {
-  id                  String       @id @default(uuid())
-  date                DateTime
-  collaboratorId      String
-  collaborator        Collaborator @relation(fields: [collaboratorId], references: [id])
-  topicType           String
-  problemDescription  String
-  resolver            String
-  resolutionDate      DateTime?
-  attachments         String?
-  tenantId            String
-  tenant              Tenant       @relation(fields: [tenantId], references: [id])
-  createdAt           DateTime     @default(now())
-  updatedAt           DateTime     @updatedAt
-
-  @@index([tenantId])
-  @@index([collaboratorId])
-}
-
-model Metric {
-  id                          String   @id @default(uuid())
-  clientId                    String
-  client                      Client   @relation(fields: [clientId], references: [id])
-  averageRotation             Float
-  averageSatisfaction         Float
-  completedSprintsPercentage  Float
-  averageBugs                 Float
-  marketMetrics               String
-  tenantId                    String
-  tenant                      Tenant   @relation(fields: [tenantId], references: [id])
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @updatedAt
-
-  @@index([tenantId])
-  @@index([clientId])
+  id          String   @id @default(uuid())
+  name        String
+  role        String
+  isActive    Boolean  @default(true)
+  tenantId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model SheetConfig {
-  id              String   @id @default(uuid())
-  sheetId         String
-  range           String
-  updateFrequency Int
-  tenantId        String
-  tenant          Tenant   @relation(fields: [tenantId], references: [id])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  @@unique([tenantId])
-  @@index([tenantId])
+  id            String    @id @default(uuid())
+  tenantId      String
+  spreadsheetId String
+  lastSyncDate  DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
-
+model Metric {
+  id        String   @id @default(uuid())
+  tenantId  String
+  clientId  String
+  value     Float
+  type      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
