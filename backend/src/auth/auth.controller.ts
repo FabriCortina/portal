@@ -1,65 +1,64 @@
-import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Request } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
-import { AuthService } from '@/auth/auth.service';
-import { LoginDto, RegisterDto, RefreshTokenDto } from '@/auth/dto/auth.dto';
+import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { LoginDto, RefreshTokenDto } from './dto/auth.dto';
+import { TokensDto } from './dto/tokens.dto';
 import { RegisterOperationsDto } from './dto/register-operations.dto';
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
-import { RolesGuard } from '@/common/guards/roles.guard';
-import { Roles } from '@/common/decorators/roles.decorator';
-import { CurrentUser } from '@/common/decorators/current-user.decorator';
-import { TenantId } from '@/common/decorators/tenant-id.decorator';
-import { TokensDto } from '@/auth/dto/tokens.dto';
-import { RefreshTokenGuard } from '@/auth/guards/refresh-token.guard';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { CurrentUserType } from '../common/types/current-user.type';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(LocalAuthGuard)
   @Post('login')
   @ApiOperation({ summary: 'Iniciar sesión' })
-  @ApiResponse({
-    status: 200,
+  @ApiResponse({ 
+    status: 200, 
     description: 'Login exitoso',
-    type: TokensDto,
+    type: TokensDto
   })
-  @ApiResponse({ status: 401, description: 'Credenciales inválidas' })
   async login(@Body() loginDto: LoginDto): Promise<TokensDto> {
     return this.authService.login(loginDto);
   }
 
   @Post('refresh')
-  @UseGuards(RefreshTokenGuard)
   @ApiOperation({ summary: 'Renovar tokens' })
-  @ApiResponse({
-    status: 200,
+  @ApiResponse({ 
+    status: 200, 
     description: 'Tokens renovados exitosamente',
-    type: TokensDto,
+    type: TokensDto
   })
-  @ApiResponse({ status: 401, description: 'Token de actualización inválido' })
-  @ApiBearerAuth()
   async refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<TokensDto> {
     return this.authService.refreshTokens(refreshTokenDto);
   }
 
-  @Post('logout')
   @UseGuards(JwtAuthGuard)
+  @Post('logout')
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Cerrar sesión' })
   @ApiResponse({ status: 200, description: 'Logout exitoso' })
-  @ApiBearerAuth()
-  async logout(@Request() req) {
-    await this.authService.logout(req.user.sub);
+  async logout(@CurrentUser() user: CurrentUserType) {
+    await this.authService.logout(user.id);
     return { message: 'Logout exitoso' };
   }
 
-  @Post('register-operations')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  @ApiOperation({ summary: 'Registrar usuario de operaciones' })
-  @ApiResponse({ status: 201, description: 'Usuario de operaciones registrado exitosamente' })
-  @ApiResponse({ status: 400, description: 'Datos de entrada inválidos' })
-  @ApiResponse({ status: 409, description: 'El correo electrónico ya está registrado' })
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Obtener perfil del usuario' })
+  @ApiResponse({ status: 200, description: 'Perfil obtenido exitosamente' })
+  getProfile(@CurrentUser() user: CurrentUserType) {
+    return user;
+  }
+
+  @Post('register-operations')
+  @ApiOperation({ summary: 'Registrar usuario de operaciones' })
+  @ApiResponse({ status: 201, description: 'Usuario registrado exitosamente' })
   async registerOperations(@Body() dto: RegisterOperationsDto) {
     return this.authService.registerOperations(dto);
   }

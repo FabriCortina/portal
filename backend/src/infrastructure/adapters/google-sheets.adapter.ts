@@ -1,6 +1,6 @@
 import { google } from 'googleapis';
 import { authenticate } from '@google-cloud/local-auth';
-import { GoogleSheetsPort } from '../../domain/ports/google-sheets.port';
+import { GoogleSheetsPort, SheetConfig } from '@/domain/ports/google-sheets.port';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import * as path from 'path';
@@ -28,10 +28,10 @@ export class GoogleSheetsAdapter implements GoogleSheetsPort {
     }
   }
 
-  async readSheet(sheetId: string, range: string): Promise<any[][]> {
+  async readSheet(spreadsheetId: string, range: string): Promise<any[][]> {
     try {
       const response = await this.sheets.spreadsheets.values.get({
-        spreadsheetId: sheetId,
+        spreadsheetId,
         range,
       });
 
@@ -42,19 +42,22 @@ export class GoogleSheetsAdapter implements GoogleSheetsPort {
     }
   }
 
-  async syncCollaborators(tenantId: string, spreadsheetId: string, data: any[][]): Promise<void> {
+  async syncCollaborators(config: SheetConfig): Promise<void> {
     try {
+      const data = await this.readSheet(config.spreadsheetId, config.range);
+
       // Actualizar o crear colaboradores
       for (const row of data) {
         const [name, role, dni, cuit, sooftEmail, personalEmail] = row;
         await this.prisma.collaborator.upsert({
           where: {
             tenantId_name: {
-              tenantId,
+              tenantId: config.tenantId,
               name
             }
           },
           create: {
+            tenantId: config.tenantId,
             name,
             role,
             dni,
@@ -62,7 +65,6 @@ export class GoogleSheetsAdapter implements GoogleSheetsPort {
             sooftEmail,
             personalEmail,
             isActive: true,
-            tenantId
           },
           update: {
             role,
@@ -78,18 +80,21 @@ export class GoogleSheetsAdapter implements GoogleSheetsPort {
       // Actualizar la configuración de la hoja
       await this.prisma.sheetConfig.upsert({
         where: {
-          tenantId
+          tenantId: config.tenantId
         },
         create: {
-          tenantId,
-          spreadsheetId,
-          sheetName: 'Colaboradores',
-          range: 'A2:F',
-          updateFrequency: 'daily',
+          tenantId: config.tenantId,
+          spreadsheetId: config.spreadsheetId,
+          sheetName: config.sheetName,
+          range: config.range,
+          updateFrequency: config.updateFrequency,
           lastSyncDate: new Date()
         },
         update: {
-          spreadsheetId,
+          spreadsheetId: config.spreadsheetId,
+          sheetName: config.sheetName,
+          range: config.range,
+          updateFrequency: config.updateFrequency,
           lastSyncDate: new Date()
         }
       });

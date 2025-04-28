@@ -15,7 +15,7 @@
     }
   },
   "sync": {
-    "sheetId": "Spreadsheet ID",
+    "spreadsheetId": "Spreadsheet ID",
     "range": "Cell range",
     "updateFrequency": "Update frequency",
     "everyXHours": "Every {{hours}} hours",

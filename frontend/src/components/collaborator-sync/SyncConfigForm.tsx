@@ -10,13 +10,13 @@ import { TextField, Button, FormControl, InputLabel, Select, MenuItem, CircularP
 import { useSyncConfig } from '../../hooks/useSyncConfig';
 
 interface SyncConfigFormInputs {
-  sheetId: string;
+  spreadsheetId: string;
   range: string;
   updateFrequency: number;
 }
 
 const schema = yup.object().shape({
-  sheetId: yup.string().required('Campo requerido'),
+  spreadsheetId: yup.string().required('Campo requerido'),
   range: yup.string().required('Campo requerido'),
   updateFrequency: yup
     .number()
@@ -115,11 +115,11 @@ export const SyncConfigForm: React.FC = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <TextField
-        {...register('sheetId')}
-        label={t('sync.sheetId')}
+        {...register('spreadsheetId')}
+        label={t('sync.spreadsheetId')}
         fullWidth
-        error={!!errors.sheetId}
-        helperText={errors.sheetId?.message}
+        error={!!errors.spreadsheetId}
+        helperText={errors.spreadsheetId?.message}
       />
 
       <TextField

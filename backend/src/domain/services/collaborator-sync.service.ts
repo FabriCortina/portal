@@ -1,60 +1,130 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { GoogleSheetsService } from '../../collaborator-sync/services/google-sheets.service';
 import { PrismaService } from '@/prisma/prisma.service';
-import { GoogleSheetsAdapter } from '@/infrastructure/adapters/google-sheets.adapter';
+import { SheetConfig } from '../ports/google-sheets.port';
 
 @Injectable()
 export class CollaboratorSyncService {
   private readonly logger = new Logger(CollaboratorSyncService.name);
 
   constructor(
+    private readonly googleSheetsService: GoogleSheetsService,
     private readonly prisma: PrismaService,
-    private readonly googleSheets: GoogleSheetsAdapter,
   ) {}
 
-  async syncCollaborators(tenantId: string): Promise<void> {
+  async syncCollaborators(config: SheetConfig) {
     try {
-      const sheetConfig = await this.prisma.sheetConfig.findUnique({
-        where: { tenantId }
-      });
+      const data = await this.googleSheetsService.readSheet(config);
+      const collaborators = this.processSheetData(data);
 
-      if (!sheetConfig) {
-        throw new Error('No se encontró la configuración de la hoja de cálculo');
+      for (const collaborator of collaborators) {
+        await this.createOrUpdateCollaborator(config.tenantId, collaborator);
       }
 
-      const data = await this.googleSheets.readSheet(
-        sheetConfig.spreadsheetId,
-        sheetConfig.range
-      );
-
-      await this.googleSheets.syncCollaborators(
-        tenantId,
-        sheetConfig.spreadsheetId,
-        data
-      );
-
-      this.logger.log(`Sincronización completada para el tenant ${tenantId}`);
+      await this.updateLastSyncDate(config.tenantId, config.id);
     } catch (error) {
-      this.logger.error(`Error al sincronizar colaboradores: ${error.message}`);
+      this.logger.error(`Error syncing collaborators: ${error.message}`);
       throw error;
     }
   }
 
-  async scheduleSync(tenantId: string): Promise<void> {
-    try {
-      const sheetConfig = await this.prisma.sheetConfig.findUnique({
-        where: { tenantId }
-      });
+  private async createOrUpdateCollaborator(tenantId: string, data: any) {
+    const { name, role, dni, cuit, sooftEmail, personalEmail, clientId } = data;
 
-      if (!sheetConfig) {
-        throw new Error('No se encontró la configuración de la hoja de cálculo');
+    // Buscar colaborador existente por nombre y tenantId
+    const existingCollaborator = await this.prisma.collaborator.findFirst({
+      where: {
+        AND: [
+          { tenantId },
+          { name }
+        ]
       }
+    });
 
-      // Aquí iría la lógica de programación de tareas
-      // Por ejemplo, usando node-cron o similar
-      this.logger.log(`Sincronización programada para el tenant ${tenantId}`);
-    } catch (error) {
-      this.logger.error(`Error al programar sincronización: ${error.message}`);
-      throw error;
+    if (existingCollaborator) {
+      // Actualizar colaborador existente
+      return this.prisma.collaborator.update({
+        where: { id: existingCollaborator.id },
+        data: {
+          role,
+          dni,
+          cuit,
+          sooftEmail,
+          personalEmail,
+          clientId,
+          updatedAt: new Date()
+        }
+      });
+    } else {
+      // Crear nuevo colaborador
+      return this.prisma.collaborator.create({
+        data: {
+          name,
+          role,
+          dni,
+          cuit,
+          sooftEmail,
+          personalEmail,
+          clientId,
+          tenantId,
+          isActive: true
+        }
+      });
     }
+  }
+
+  private async updateLastSyncDate(tenantId: string, configId: string) {
+    return this.prisma.sheetConfig.update({
+      where: { id: configId },
+      data: {
+        lastSyncDate: new Date()
+      }
+    });
+  }
+
+  private processSheetData(data: any[][]): any[] {
+    // Implementar lógica de procesamiento de datos de la hoja
+    // Este método debe convertir los datos de la hoja en objetos de colaborador
+    return [];
+  }
+
+  async getCollaboratorsByTenant(tenantId: string) {
+    return this.prisma.collaborator.findMany({
+      where: {
+        tenantId,
+        isActive: true,
+      },
+      include: {
+        client: true,
+      },
+    });
+  }
+
+  async getCollaboratorByDni(tenantId: string, dni: string) {
+    return this.prisma.collaborator.findFirst({
+      where: {
+        tenantId,
+        dni,
+        isActive: true,
+      },
+      include: {
+        client: true,
+      },
+    });
+  }
+
+  async updateCollaborator(tenantId: string, name: string, data: any) {
+    return this.prisma.collaborator.update({
+      where: {
+        tenantId_name: {
+          tenantId,
+          name,
+        },
+      },
+      data: {
+        ...data,
+        updatedAt: new Date(),
+      },
+    });
   }
 } 

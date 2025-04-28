@@ -1,74 +1,39 @@
-import { Controller, Post, Body, UseGuards, Req, Put, Param, Get } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../../auth/guards/roles.guard';
-import { Roles } from '../../auth/decorators/roles.decorator';
-import { Role } from '../../auth/enums/role.enum';
-import { ScheduleCollaboratorSyncUseCase } from '../../application/use-cases/schedule-collaborator-sync.use-case';
-import { SheetConfig } from '../../domain/ports/google-sheets.port';
-import { PrismaService } from '../../infrastructure/prisma/prisma.service';
+import { Controller, Post, Body, UseGuards, Get, Param } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { CollaboratorSyncService } from '@/application/use-cases/schedule-collaborator-sync.use-case';
+import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@/common/guards/roles.guard';
+import { Roles } from '@/common/decorators/roles.decorator';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
+import { CurrentUserType } from '@/common/types/current-user.type';
+import { SheetConfigDto } from '@/collaborator-sync/dto/sheet-config.dto';
 
+@ApiTags('Collaborator Sync')
 @Controller('collaborator-sync')
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth()
 export class CollaboratorSyncController {
-  constructor(
-    private readonly scheduleUseCase: ScheduleCollaboratorSyncUseCase,
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private readonly syncService: CollaboratorSyncService) {}
 
-  @Post('configure')
-  @Roles(Role.ADMIN)
-  async configureSync(
-    @Body() config: SheetConfig,
-    @Req() req: any,
-  ): Promise<void> {
-    // Asegurarse de que el tenant coincida con el del usuario
-    if (req.user.tenantId !== config.tenantId) {
-      throw new Error('No autorizado para configurar sincronización para este tenant');
-    }
-
-    await this.scheduleUseCase.schedule(config);
-  }
-
-  @Put(':tenantId/force')
-  @Roles(Role.ADMIN)
-  async forceSync(
-    @Param('tenantId') tenantId: string,
-    @Req() req: any,
-  ): Promise<void> {
-    // Asegurarse de que el tenant coincida con el del usuario
-    if (req.user.tenantId !== tenantId) {
-      throw new Error('No autorizado para forzar sincronización para este tenant');
-    }
-
-    await this.scheduleUseCase.forceSync(tenantId);
-  }
-
-  @Get(':tenantId/config')
-  @Roles(Role.ADMIN)
-  async getConfig(
-    @Param('tenantId') tenantId: string,
-    @Req() req: any,
-  ): Promise<SheetConfig | null> {
-    // Asegurarse de que el tenant coincida con el del usuario
-    if (req.user.tenantId !== tenantId) {
-      throw new Error('No autorizado para obtener configuración para este tenant');
-    }
-
-    const config = await this.prisma.sheetConfig.findUnique({
-      where: {
-        tenantId,
-      },
+  @Post('schedule')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Programar sincronización de colaboradores' })
+  @ApiResponse({ status: 200, description: 'Sincronización programada exitosamente' })
+  async scheduleSync(
+    @CurrentUser() user: CurrentUserType,
+    @Body() config: SheetConfigDto,
+  ) {
+    return this.syncService.schedule({
+      ...config,
+      tenantId: user.tenantId,
     });
+  }
 
-    if (!config) {
-      return null;
-    }
-
-    return {
-      sheetId: config.sheetId,
-      range: config.range,
-      updateFrequency: config.updateFrequency,
-      tenantId: config.tenantId,
-    };
+  @Post('force/:tenantId')
+  @Roles('admin')
+  @ApiOperation({ summary: 'Forzar sincronización de colaboradores' })
+  @ApiResponse({ status: 200, description: 'Sincronización forzada exitosamente' })
+  async forceSync(@Param('tenantId') tenantId: string) {
+    return this.syncService.forceSync(tenantId);
   }
 } 

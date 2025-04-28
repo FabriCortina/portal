@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { google } from 'googleapis';
 import { SheetConfigDto, ColumnMappingDto } from '../dto/sheet-config.dto';
-import { PrismaService } from '../../prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 
 @Injectable()
 export class GoogleSheetsService {
@@ -58,7 +58,7 @@ export class GoogleSheetsService {
         const collaboratorData = this.mapRowToCollaborator(row, columnIndices);
 
         if (collaboratorData) {
-          await this.upsertCollaborator(collaboratorData);
+          await this.upsertCollaborator(config.tenantId, collaboratorData);
         }
       }
 
@@ -94,13 +94,13 @@ export class GoogleSheetsService {
   ): any {
     try {
       return {
-        dni: row[indices.dni]?.trim(),
         name: row[indices.name]?.trim(),
-        status: row[indices.status]?.trim(),
-        client: row[indices.client]?.trim(),
-        project: row[indices.project]?.trim(),
         role: row[indices.role]?.trim(),
-        province: row[indices.province]?.trim(),
+        dni: row[indices.dni]?.trim(),
+        cuit: row[indices.cuit]?.trim(),
+        sooftEmail: row[indices.sooftEmail]?.trim(),
+        personalEmail: row[indices.personalEmail]?.trim(),
+        isActive: true,
       };
     } catch (error) {
       this.logger.error(`Error mapping row: ${error.message}`);
@@ -108,27 +108,33 @@ export class GoogleSheetsService {
     }
   }
 
-  private async upsertCollaborator(data: any): Promise<void> {
+  private async upsertCollaborator(tenantId: string, data: any): Promise<void> {
     try {
       await this.prisma.collaborator.upsert({
-        where: { dni: data.dni },
+        where: {
+          tenantId_name: {
+            tenantId,
+            name: data.name,
+          },
+        },
         update: {
-          name: data.name,
-          status: data.status,
-          client: data.client,
-          project: data.project,
           role: data.role,
-          province: data.province,
+          dni: data.dni,
+          cuit: data.cuit,
+          sooftEmail: data.sooftEmail,
+          personalEmail: data.personalEmail,
+          isActive: data.isActive,
           updatedAt: new Date(),
         },
         create: {
-          dni: data.dni,
+          tenantId,
           name: data.name,
-          status: data.status,
-          client: data.client,
-          project: data.project,
           role: data.role,
-          province: data.province,
+          dni: data.dni,
+          cuit: data.cuit,
+          sooftEmail: data.sooftEmail,
+          personalEmail: data.personalEmail,
+          isActive: data.isActive,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -142,15 +148,23 @@ export class GoogleSheetsService {
   private async updateLastSyncDate(config: SheetConfigDto): Promise<void> {
     try {
       await this.prisma.sheetConfig.upsert({
-        where: { spreadsheetId: config.spreadsheetId },
-        update: {
-          lastSyncDate: new Date().toISOString(),
+        where: {
+          tenantId: config.tenantId,
         },
-        create: {
+        update: {
+          lastSyncDate: new Date(),
           spreadsheetId: config.spreadsheetId,
           sheetName: config.sheetName,
-          syncInterval: config.syncInterval,
-          lastSyncDate: new Date().toISOString(),
+          range: config.range,
+          updateFrequency: config.updateFrequency,
+        },
+        create: {
+          tenantId: config.tenantId,
+          spreadsheetId: config.spreadsheetId,
+          sheetName: config.sheetName,
+          range: config.range,
+          updateFrequency: config.updateFrequency,
+          lastSyncDate: new Date(),
         },
       });
     } catch (error) {

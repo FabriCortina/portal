@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../contexts/AuthContext';
 
 interface SyncConfig {
-  sheetId: string;
+  spreadsheetId: string;
   range: string;
   updateFrequency: number;
 }

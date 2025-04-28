@@ -1,10 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDto {
   @ApiProperty({
     description: 'Email del usuario',
-    example: 'usuario@ejemplo.com',
+    example: 'usuario@example.com',
   })
   @IsEmail()
   @IsNotEmpty()
@@ -12,11 +12,10 @@ export class LoginDto {
 
   @ApiProperty({
     description: 'Contraseña del usuario',
-    example: 'contraseña123',
+    example: 'Contraseña123!',
   })
   @IsString()
   @IsNotEmpty()
-  @MinLength(6)
   password: string;
 }
 
@@ -27,6 +26,22 @@ export class RefreshTokenDto {
   })
   @IsString()
   @IsNotEmpty()
+  refreshToken: string;
+}
+
+export class TokensDto {
+  @ApiProperty({
+    description: 'Token de acceso',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  @IsString()
+  accessToken: string;
+
+  @ApiProperty({
+    description: 'Token de actualización',
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+  })
+  @IsString()
   refreshToken: string;
 }
 
@@ -59,8 +74,9 @@ export class RegisterDto {
   @ApiProperty({
     description: 'Rol del usuario',
     example: 'admin',
+    enum: ['admin', 'operations', 'user'],
   })
-  @IsString()
+  @IsEnum(['admin', 'operations', 'user'])
   @IsNotEmpty()
   role: string;
 } 

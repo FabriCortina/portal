@@ -14,9 +14,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  name          String
+  role          String
+  tenantId      String
+  tenant        Tenant         @relation(fields: [tenantId], references: [id])
+  refreshTokens RefreshToken[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
 model Tenant {
   id            String         @id @default(uuid())
   name          String
+  users         User[]
   collaborators Collaborator[]
   sheetConfigs  SheetConfig[]
   metrics       Metric[]
@@ -71,9 +97,12 @@ model Metric {
   id            String    @id @default(uuid())
   tenantId      String
   clientId      String?
-  marketMetrics Json
+  type          String
+  value         Float
+  marketMetrics Json?      // <<--- Este campo opcional para flexibilidad
   tenant        Tenant    @relation(fields: [tenantId], references: [id])
   client        Client?   @relation(fields: [clientId], references: [id])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
+

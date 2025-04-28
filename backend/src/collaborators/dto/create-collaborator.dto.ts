@@ -3,6 +3,16 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class CreateCollaboratorDto {
+  @ApiProperty({ example: 'Juan Pérez', description: 'Nombre completo del colaborador' })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ example: 'Desarrollador Senior', description: 'Rol del colaborador' })
+  @IsString()
+  @IsNotEmpty()
+  role: string;
+
   @ApiProperty({ example: '12345678', description: 'DNI del colaborador' })
   @IsString()
   @IsNotEmpty()
@@ -13,10 +23,20 @@ export class CreateCollaboratorDto {
   @IsNotEmpty()
   cuit: string;
 
-  @ApiProperty({ example: 'Juan Pérez', description: 'Nombre completo del colaborador' })
-  @IsString()
+  @ApiProperty({ example: 'juan@sooft.com', description: 'Email corporativo', required: false })
+  @IsEmail()
+  @IsOptional()
+  sooftEmail?: string;
+
+  @ApiProperty({ example: 'juan@personal.com', description: 'Email personal', required: false })
+  @IsEmail()
+  @IsOptional()
+  personalEmail?: string;
+
+  @ApiProperty({ example: true, description: 'Estado activo del colaborador' })
+  @IsBoolean()
   @IsNotEmpty()
-  name: string;
+  isActive: boolean;
 
   @ApiProperty({ example: 'Buenos Aires', description: 'Sede del colaborador' })
   @IsString()
@@ -66,16 +86,6 @@ export class CreateCollaboratorDto {
   @IsString()
   @IsNotEmpty()
   position: string;
-
-  @ApiProperty({ example: 'juan@sooft.com', description: 'Email corporativo' })
-  @IsEmail()
-  @IsNotEmpty()
-  sooftEmail: string;
-
-  @ApiProperty({ example: 'juan@personal.com', description: 'Email personal' })
-  @IsEmail()
-  @IsNotEmpty()
-  personalEmail: string;
 
   @ApiProperty({ example: 'juan@cliente.com', description: 'Email del cliente' })
   @IsEmail()

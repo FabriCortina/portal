@@ -1,7 +1,7 @@
 import { IsString, IsNotEmpty, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class SheetConfigDto {
+export class CreateSheetConfigDto {
   @ApiProperty({ 
     example: '1BxiM0hXyjaX_6Q5vFmK5JvH5dLbwJz1k', 
     description: 'ID de la hoja de cálculo de Google Sheets' 

@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CollaboratorSyncService } from '../../domain/services/collaborator-sync.service';
 import { SheetConfig } from '../../domain/ports/google-sheets.port';
-import { PrismaService } from '../../infrastructure/prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import * as cron from 'node-cron';
 
 @Injectable()
@@ -21,15 +21,19 @@ export class ScheduleCollaboratorSyncUseCase {
         tenantId: config.tenantId,
       },
       update: {
-        sheetId: config.sheetId,
+        spreadsheetId: config.spreadsheetId,
+        sheetName: config.sheetName,
         range: config.range,
         updateFrequency: config.updateFrequency,
+        lastSyncDate: new Date(),
       },
       create: {
         tenantId: config.tenantId,
-        sheetId: config.sheetId,
+        spreadsheetId: config.spreadsheetId,
+        sheetName: config.sheetName,
         range: config.range,
         updateFrequency: config.updateFrequency,
+        lastSyncDate: new Date(),
       },
     });
 
@@ -41,7 +45,7 @@ export class ScheduleCollaboratorSyncUseCase {
     }
 
     // Programar nuevo trabajo
-    const cronExpression = `0 */${config.updateFrequency} * * *`; // Cada X horas
+    const cronExpression = this.getCronExpression(config.updateFrequency);
     const job = cron.schedule(cronExpression, async () => {
       try {
         await this.syncService.syncCollaborators(config);
@@ -52,7 +56,7 @@ export class ScheduleCollaboratorSyncUseCase {
     });
 
     this.syncJobs.set(config.tenantId, job);
-    this.logger.log(`Sincronización programada para tenant ${config.tenantId} cada ${config.updateFrequency} horas`);
+    this.logger.log(`Sincronización programada para tenant ${config.tenantId} con frecuencia ${config.updateFrequency}`);
 
     // Ejecutar sincronización inicial
     try {
@@ -90,10 +94,26 @@ export class ScheduleCollaboratorSyncUseCase {
     }
 
     return {
-      sheetId: config.sheetId,
+      tenantId: config.tenantId,
+      spreadsheetId: config.spreadsheetId,
+      sheetName: config.sheetName,
       range: config.range,
       updateFrequency: config.updateFrequency,
-      tenantId: config.tenantId,
     };
+  }
+
+  private getCronExpression(frequency: string): string {
+    switch (frequency) {
+      case 'hourly':
+        return '0 * * * *'; // Cada hora
+      case 'daily':
+        return '0 0 * * *'; // Cada día a medianoche
+      case 'weekly':
+        return '0 0 * * 0'; // Cada domingo a medianoche
+      case 'monthly':
+        return '0 0 1 * *'; // Primer día de cada mes a medianoche
+      default:
+        return '0 0 * * *'; // Por defecto, diario
+    }
   }
 } 

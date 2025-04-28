@@ -117,6 +117,40 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.UserScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  password: 'password',
+  name: 'name',
+  role: 'role',
+  tenantId: 'tenantId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TenantScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ClientScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CollaboratorScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
@@ -148,6 +182,8 @@ exports.Prisma.MetricScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
   clientId: 'clientId',
+  type: 'type',
+  value: 'value',
   marketMetrics: 'marketMetrics',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -158,7 +194,8 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.JsonNullValueInput = {
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
   JsonNull: Prisma.JsonNull
 };
 
@@ -180,6 +217,10 @@ exports.Prisma.JsonNullValueFilter = {
 
 
 exports.Prisma.ModelName = {
+  User: 'User',
+  RefreshToken: 'RefreshToken',
+  Tenant: 'Tenant',
+  Client: 'Client',
   Collaborator: 'Collaborator',
   SheetConfig: 'SheetConfig',
   Metric: 'Metric'

@@ -18,20 +18,44 @@ export class RegisterOperationsDto {
   @IsString({ each: true })
   permissions!: string[];
 
-  @ApiProperty({ example: 'operaciones@sooft.com', description: 'Correo electrónico corporativo' })
-  @IsEmail({}, { message: 'El correo electrónico no es válido' })
-  @IsNotEmpty({ message: 'El correo electrónico es requerido' })
-  @Matches(/@sooft\.com$/, { message: 'El correo electrónico debe ser del dominio @sooft.com' })
+  @ApiProperty({ 
+    example: 'Juan Pérez', 
+    description: 'Nombre completo del usuario' 
+  })
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @ApiProperty({ 
+    example: 'juan.perez@example.com', 
+    description: 'Correo electrónico del usuario' 
+  })
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ example: 'Password123!', description: 'Contraseña del usuario' })
+  @ApiProperty({ 
+    example: 'Contraseña123!', 
+    description: 'Contraseña del usuario' 
+  })
   @IsString()
-  @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
-  @Matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-    {
-      message: 'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial',
-    },
-  )
+  @IsNotEmpty()
   password: string;
+
+  @ApiProperty({ 
+    example: 'admin', 
+    description: 'Rol del usuario',
+    enum: ['admin', 'user', 'operations']
+  })
+  @IsString()
+  @IsNotEmpty()
+  role: string;
+
+  @ApiProperty({ 
+    example: 'tenant-123', 
+    description: 'ID del tenant al que pertenece el usuario' 
+  })
+  @IsString()
+  @IsNotEmpty()
+  tenantId: string;
 } 

@@ -17,7 +17,7 @@
   "sync": {
     "title": "Configuración de sincronización",
     "description": "Configure la sincronización automática de colaboradores desde Google Sheets. Especifique el ID de la hoja de cálculo, el rango de celdas y la frecuencia de actualización.",
-    "sheetId": "ID de la hoja de cálculo",
+    "spreadsheetId": "ID de la hoja de cálculo",
     "range": "Rango de celdas",
     "updateFrequency": "Frecuencia de actualización",
     "everyXHours": "Cada {{hours}} horas",
