@@ -14,7 +14,7 @@ export class MetricsService {
       data: {
         type,
         value,
-        marketMetrics: marketMetrics || null,
+        marketMetrics: marketMetrics ? JSON.stringify(marketMetrics) : null,
         clientId,
         tenantId
       },
@@ -60,7 +60,7 @@ export class MetricsService {
       where: { id: metric.id },
       data: {
         ...updateMetricDto,
-        marketMetrics: updateMetricDto.marketMetrics || null
+        marketMetrics: updateMetricDto.marketMetrics ? JSON.stringify(updateMetricDto.marketMetrics) : null
       },
       include: {
         client: true
@@ -119,10 +119,13 @@ export class MetricsService {
       }
     });
 
-    return metrics.map(metric => ({
-      type: metric.type,
-      value: metric.value,
-      marketMetrics: metric.marketMetrics as Record<string, any> || null
-    }));
+    return metrics.map(metric => {
+      const marketMetrics = metric.marketMetrics ? JSON.parse(metric.marketMetrics as string) : null;
+      return {
+        type: metric.type,
+        value: metric.value,
+        marketMetrics
+      };
+    });
   }
 } 

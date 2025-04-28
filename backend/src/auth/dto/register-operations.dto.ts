@@ -1,23 +1,7 @@
-import { IsString, IsEmail, IsNotEmpty, MinLength, Matches, IsArray } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty, MinLength, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class RegisterOperationsDto {
-  @ApiProperty({
-    description: 'Nombre de la operación',
-    example: 'Crear Usuario',
-  })
-  @IsString()
-  @IsNotEmpty()
-  name!: string;
-
-  @ApiProperty({
-    description: 'Lista de permisos',
-    example: ['read', 'write'],
-  })
-  @IsArray()
-  @IsString({ each: true })
-  permissions!: string[];
-
   @ApiProperty({ 
     example: 'Juan Pérez', 
     description: 'Nombre completo del usuario' 
@@ -36,10 +20,12 @@ export class RegisterOperationsDto {
 
   @ApiProperty({ 
     example: 'Contraseña123!', 
-    description: 'Contraseña del usuario' 
+    description: 'Contraseña del usuario',
+    minLength: 6
   })
   @IsString()
   @IsNotEmpty()
+  @MinLength(6)
   password: string;
 
   @ApiProperty({ 
@@ -52,10 +38,20 @@ export class RegisterOperationsDto {
   role: string;
 
   @ApiProperty({ 
-    example: 'tenant-123', 
+    example: '550e8400-e29b-41d4-a716-446655440000', 
     description: 'ID del tenant al que pertenece el usuario' 
   })
   @IsString()
   @IsNotEmpty()
   tenantId: string;
+
+  @ApiProperty({
+    description: 'Lista de permisos del usuario',
+    example: ['read', 'write', 'delete'],
+    type: [String]
+  })
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty()
+  permissions: string[];
 } 

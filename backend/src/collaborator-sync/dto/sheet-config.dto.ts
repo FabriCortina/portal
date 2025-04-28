@@ -1,7 +1,23 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsEnum, IsOptional, IsDate } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class SheetConfigDto {
+  @ApiProperty({ 
+    example: '550e8400-e29b-41d4-a716-446655440000',
+    description: 'ID único de la configuración'
+  })
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @ApiProperty({ 
+    example: '550e8400-e29b-41d4-a716-446655440000',
+    description: 'ID del tenant al que pertenece la configuración'
+  })
+  @IsString()
+  @IsNotEmpty()
+  tenantId: string;
+
   @ApiProperty({ 
     example: '1BxiM0hXyjaX_6Q5vFmK5JvH5dLbwJz1k', 
     description: 'ID de la hoja de cálculo de Google Sheets' 
@@ -40,9 +56,9 @@ export class SheetConfigDto {
     description: 'Fecha de última sincronización',
     required: false
   })
-  @IsString()
+  @IsDate()
   @IsOptional()
-  lastSyncDate?: string;
+  lastSyncDate?: Date;
 }
 
 export class ColumnMappingDto {

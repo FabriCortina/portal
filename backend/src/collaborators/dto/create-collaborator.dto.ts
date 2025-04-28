@@ -23,6 +23,16 @@ export class CreateCollaboratorDto {
   @IsNotEmpty()
   cuit: string;
 
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000', description: 'ID del tenant al que pertenece el colaborador' })
+  @IsString()
+  @IsNotEmpty()
+  tenantId: string;
+
+  @ApiProperty({ example: '550e8400-e29b-41d4-a716-446655440000', description: 'ID del cliente al que pertenece el colaborador', required: false })
+  @IsString()
+  @IsOptional()
+  clientId?: string;
+
   @ApiProperty({ example: 'juan@sooft.com', description: 'Email corporativo', required: false })
   @IsEmail()
   @IsOptional()
@@ -33,10 +43,10 @@ export class CreateCollaboratorDto {
   @IsOptional()
   personalEmail?: string;
 
-  @ApiProperty({ example: true, description: 'Estado activo del colaborador' })
+  @ApiProperty({ example: true, description: 'Estado activo del colaborador', required: false })
   @IsBoolean()
-  @IsNotEmpty()
-  isActive: boolean;
+  @IsOptional()
+  isActive?: boolean;
 
   @ApiProperty({ example: 'Buenos Aires', description: 'Sede del colaborador' })
   @IsString()

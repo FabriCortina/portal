@@ -47,12 +47,14 @@ export class CollaboratorSyncService {
         where: { id: existingCollaborator.id },
         data: {
           role,
-          dni,
-          cuit,
           sooftEmail,
           personalEmail,
           clientId,
-          updatedAt: new Date()
+          updatedAt: new Date(),
+          metadata: {
+            dni,
+            cuit
+          }
         }
       });
     } else {
@@ -61,13 +63,15 @@ export class CollaboratorSyncService {
         data: {
           name,
           role,
-          dni,
-          cuit,
           sooftEmail,
           personalEmail,
           clientId,
           tenantId,
-          isActive: true
+          isActive: true,
+          metadata: {
+            dni,
+            cuit
+          }
         }
       });
     }
@@ -114,6 +118,7 @@ export class CollaboratorSyncService {
   }
 
   async updateCollaborator(tenantId: string, name: string, data: any) {
+    const { dni, cuit, ...restData } = data;
     return this.prisma.collaborator.update({
       where: {
         tenantId_name: {
@@ -122,8 +127,12 @@ export class CollaboratorSyncService {
         },
       },
       data: {
-        ...data,
+        ...restData,
         updatedAt: new Date(),
+        metadata: {
+          dni,
+          cuit
+        }
       },
     });
   }

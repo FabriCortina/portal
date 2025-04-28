@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { google } from 'googleapis';
 import { SheetConfigDto, ColumnMappingDto } from '../dto/sheet-config.dto';
 import { PrismaService } from '@/prisma/prisma.service';
+import { SheetConfig } from '@/domain/ports/google-sheets.port';
 
 @Injectable()
 export class GoogleSheetsService {
@@ -21,6 +22,20 @@ export class GoogleSheetsService {
     });
 
     this.sheets = google.sheets({ version: 'v4', auth });
+  }
+
+  async readSheet(config: SheetConfig): Promise<any[][]> {
+    try {
+      const response = await this.sheets.spreadsheets.values.get({
+        spreadsheetId: config.spreadsheetId,
+        range: `${config.sheetName}!${config.range}`,
+      });
+
+      return response.data.values || [];
+    } catch (error) {
+      this.logger.error(`Error reading sheet: ${error.message}`);
+      throw new Error('Error al leer la hoja de cálculo');
+    }
   }
 
   async readSheetData(config: SheetConfigDto): Promise<any[]> {
@@ -112,10 +127,10 @@ export class GoogleSheetsService {
     try {
       await this.prisma.collaborator.upsert({
         where: {
-          tenantId_name: {
-            tenantId,
-            name: data.name,
-          },
+          AND: [
+            { tenantId },
+            { name: data.name }
+          ]
         },
         update: {
           role: data.role,
